@@ -2,5 +2,6 @@
   "lock": false,
   "tasks": {
     "start": "deno run -A --unstable --watch main.js"
-  }
+  },
+  "importMap": "./import_map.json"
 }

@@ -1,6 +1,6 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { serveDir } from "https://deno.land/std@0.190.0/http/file_server.ts";
-import { renderFileToString } from "https://deno.land/x/dejs@0.10.3/mod.ts";
+import { serve } from "std/http/server.ts";
+import { serveDir } from "std/http/file_server.ts";
+import { renderFileToString } from "dejs/mod.ts";
 import { Chat } from "./chat.js";
 import { Router } from "./routes.js";
 import { Database } from "./database.js";
