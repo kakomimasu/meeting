@@ -1,6 +1,10 @@
-class Database {
-  async connect() {
-    this.kv = await Deno.openKv();
+export class Database {
+  static async open() {
+    const kv = await Deno.openKv();
+    return new Database(kv);
+  }
+  constructor(kv) {
+    this.kv = kv;
   }
   async loadMessages() {
     const data = (await this.kv.get(["chat"])).value;
@@ -13,7 +17,3 @@ class Database {
     await this.kv.set(["chat"], messages);
   }
 }
-
-const db = new Database();
-await db.connect();
-export { db };

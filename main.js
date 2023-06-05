@@ -1,10 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { serveDir } from "https://deno.land/std@0.190.0/http/file_server.ts";
 import { renderFileToString } from "https://deno.land/x/dejs@0.10.3/mod.ts";
 import { Chat } from "./chat.js";
 import { Router } from "./routes.js";
+import { Database } from "./database.js";
 
-const chat = new Chat();
-const router = new Router();
+const db = await Database.open();
+const chat = new Chat(db);
+const router = new Router(db);
 
 router.add("GET", "/", async (req) => {
   return new Response(
@@ -30,7 +33,6 @@ router.add("GET", "/chat", async (req) => {
 });
 
 router.add("POST", "/chat", async (req) => {
-  console.log("post chat");
   const form = await req.formData();
   const msg = form.get("msg");
   await chat.post(msg);
@@ -42,4 +44,5 @@ serve(async (req) => {
   if (handler) {
     return await handler(req);
   }
+  return serveDir(req, { fsRoot: "./static/" });
 });

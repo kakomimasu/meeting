@@ -1,49 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+    <link rel="stylesheet" href="style.css">
     <meta charset="utf-8"/>
-    <script type="module">
-const messages = document.getElementById("messages");
-const inputMessage = document.getElementById("input-msg");
-const send = document.getElementById("send");
-let es = new EventSource(window.location.href + "chat");
-
-function setMessages(msgs) {
-  messages.innerHTML = "";
-  msgs.forEach((msg) => {
-    const td = document.createElement("td");
-    td.textContent = msg;
-    const tr = document.createElement("tr");
-    tr.appendChild(td);
-    messages.appendChild(tr);
-  });
-}
-
-const data = await (await fetch("/chat")).json();
-setMessages(data);
-
-es.addEventListener("message", (e) => {
-  const newData = JSON.parse(e.data);
-  setMessages(newData);
-});
-
-es.addEventListener("error", async () => {
-  es.close();
-  const backoff = 10000 + Math.random() * 5000;
-  await new Promise((resolve) => setTimeout(resolve, backoff));
-  es = new EventSource(window.location.href + "chat");
-});
-
-send.addEventListener("click", async () => {
-  const form = new FormData();
-  form.append("msg", inputMessage.value);
-  await fetch("chat", {
-    method: "POST",
-    body: form,
-  });
-});
-    </script>
+    <script type="module" src="front.js"></script>
   </head>
   <body>
     <table id="messages"></table>

@@ -1,8 +1,10 @@
-import { db } from "./database.js";
-
 export class Chat {
+  constructor(db) {
+    this.db = db;
+  }
   connect() {
     const bc = new BroadcastChannel(`chat`);
+    const db = this.db;
     const body = new ReadableStream({
       start(controller) {
         bc.addEventListener("message", async () => {
@@ -24,11 +26,11 @@ export class Chat {
     return body;
   }
   async post(msg) {
-    await db.writeMessage(msg);
+    await this.db.writeMessage(msg);
     const bc = new BroadcastChannel(`chat`);
     bc.postMessage("" + Date.now());
   }
   async load() {
-    return await db.loadMessages();
+    return await this.db.loadMessages();
   }
 }
