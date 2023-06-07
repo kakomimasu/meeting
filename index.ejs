@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js"></script>
   <script type="module" src="front.js"></script>
-  <script type="module" src="video.js"></script>
+  <script type="module" src="voice.js"></script>
 </head>
 
 <body>
@@ -14,8 +14,8 @@
     <a href="/auth/signin">signin</a>
     <a href="/auth/signout">signout</a>
     <% if (user) { %>
-      <%= user.name %> (<%= user.id %>)
-      <img src="<%= user.avatarUrl %>">
+    <%= user.name %> (<%= user.id %>)
+    <img src="<%= user.avatarUrl %>">
     <% } %>
     <p>ID: <span id="my-id"></span></p>
     <div>

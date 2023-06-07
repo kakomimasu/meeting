@@ -1,3 +1,5 @@
+import { Comment } from './comment.js'
+
 export class Chat {
   constructor(db) {
     this.db = db;
@@ -24,6 +26,20 @@ export class Chat {
       },
     });
     return body;
+  }
+  async getList() {
+    // キーが chat- から始まるリストを取得
+    const dbCommentList = await this.db.keyList("chat-")
+
+    const commentList = []
+    for await (const dbComment of dbCommentList) {
+      commentList.push(JSON.stringify(dbComment))
+    }
+    return commentList
+  }
+  async post2(user, message) {
+    const comment = new Comment(user, message)
+    await this.db.wriet(comment.id, comment)
   }
   async post(msg) {
     await this.db.writeMessage(msg);

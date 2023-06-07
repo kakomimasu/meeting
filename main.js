@@ -30,14 +30,16 @@ router.add("GET", "/chat", async (req) => {
       },
     });
   }
-  const data = await chat.load();
+  // const data = await chat.load()
+  const data = await chat.getList();
   return Response.json(data);
 });
 
 router.add("POST", "/chat", async (req) => {
   const form = await req.formData();
   const msg = form.get("msg");
-  await chat.post(msg);
+  // await chat.post(msg);
+  await chat.post2("user", msg)
   return Response.json({ ok: true });
 });
 
