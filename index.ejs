@@ -1,14 +1,34 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <link rel="stylesheet" href="style.css">
-    <meta charset="utf-8"/>
-    <script type="module" src="front.js"></script>
-  </head>
-  <body>
-    <video id="my-video" width="400px" autoplay muted playsinline></video>
-    <table id="messages"></table>
-    <input id="input-msg" />
-    <button id="send">送信</button>
-  </body>
+
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js"></script>
+  <script type="module" src="front.js"></script>
+  <script type="module" src="video.js"></script>
+</head>
+
+<body>
+  <div>
+    <a href="/auth/signin">signin</a>
+    <a href="/auth/signout">signout</a>
+    <% if (user) { %>
+      <%= user.name %> (<%= user.id %>)
+      <img src="<%= user.avatarUrl %>">
+    <% } %>
+    <p>ID: <span id="my-id"></span></p>
+    <div>
+      <button id="join">join</button>
+    </div>
+    <video id="local-video" width="400px" muted playsinline></video>
+    <div id="button-area"></div>
+    <div id="remote-media-area"></div>
+    <!-- <script type="module" src="main.js"></script> -->
+  </div>
+  <table id="messages"></table>
+  <input id="input-msg" />
+  <button id="send">送信</button>
+</body>
+
 </html>
