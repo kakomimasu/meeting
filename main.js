@@ -4,14 +4,16 @@ import { renderFileToString } from "dejs/mod.ts";
 import { Chat } from "./chat.js";
 import { Router } from "./routes.js";
 import { Database } from "./database.js";
+import { AuthController, getUser } from "./auth.js";
 
 const db = await Database.open();
 const chat = new Chat(db);
 const router = new Router(db);
 
 router.add("GET", "/", async (req) => {
+  const user = await getUser(req);
   return new Response(
-    await renderFileToString("index.ejs"),
+    await renderFileToString("index.ejs", { user }),
     {
       headers: { "content-type": "text/html" },
     },
@@ -38,6 +40,10 @@ router.add("POST", "/chat", async (req) => {
   await chat.post(msg);
   return Response.json({ ok: true });
 });
+
+router.add("GET", "/auth/oauth2callback", AuthController.oauth2callback);
+router.add("GET", "/auth/signin", AuthController.signin);
+router.add("GET", "/auth/signout", AuthController.signout);
 
 serve(async (req) => {
   const handler = router.get(req);
