@@ -1,5 +1,5 @@
 import { serveDir } from "std/http/file_server.ts";
-import { getCookies } from "https://deno.land/std@0.190.0/http/cookie.ts";
+import { getCookies } from "std/http/cookie.ts";
 
 export class Router {
   async handle(req) {
