@@ -1,56 +1,39 @@
+import "std/dotenv/load.ts";
 import { serve } from "std/http/server.ts";
-import { serveDir } from "std/http/file_server.ts";
-import { renderFileToString } from "dejs/mod.ts";
-import { Chat } from "./chat.js";
-import { Router } from "./routes.js";
 import { Database } from "./database.js";
-import { AuthController, getUser } from "./auth.js";
+import { GitHub } from "./github.js";
+import { Index } from "./index.js";
+import { Signout } from "./signout.js";
+import { Signin } from "./signin.js";
+import { OAuthCallback } from "./oauth_callback.js";
+import { Chat } from "./chat.js";
+import { Router } from "./router.js";
 
-const db = await Database.open();
-const chat = new Chat(db);
-const router = new Router(db);
+// オブジェクトを作成する
+const kv = await Deno.openKv();
+const db = new Database();
+const github = new GitHub();
+const index = new Index();
+const signin = new Signin();
+const signout = new Signout();
+const oauthCallback = new OAuthCallback();
+const chat = new Chat();
+const router = new Router();
 
-router.add("GET", "/", async (req) => {
-  const user = await getUser(req);
-  return new Response(
-    await renderFileToString("index.ejs", { user }),
-    {
-      headers: { "content-type": "text/html" },
-    },
-  );
-});
+// オブジェクトを接続する
+db.kv = kv;
+oauthCallback.db = db;
+signin.db = db;
+signin.github = github;
+signout.db = db;
+oauthCallback.db = db;
+oauthCallback.github = github;
+chat.db = db;
+router.db = db;
+router.index = index;
+router.oauthCallback = oauthCallback;
+router.signin = signin;
+router.signout = signout;
+router.chat = chat;
 
-router.add("GET", "/chat", async (req) => {
-  const accept = req.headers.get("accept");
-  if (accept === "text/event-stream") {
-    const body = chat.connect();
-    return new Response(body, {
-      headers: {
-        "content-type": "text/event-stream",
-      },
-    });
-  }
-  // const data = await chat.load()
-  const data = await chat.getList();
-  return Response.json(data);
-});
-
-router.add("POST", "/chat", async (req) => {
-  const form = await req.formData();
-  const msg = form.get("msg");
-  // await chat.post(msg);
-  await chat.post2("user", msg)
-  return Response.json({ ok: true });
-});
-
-router.add("GET", "/auth/oauth2callback", AuthController.oauth2callback);
-router.add("GET", "/auth/signin", AuthController.signin);
-router.add("GET", "/auth/signout", AuthController.signout);
-
-serve(async (req) => {
-  const handler = router.get(req);
-  if (handler) {
-    return await handler(req);
-  }
-  return serveDir(req, { fsRoot: "./static/" });
-});
+serve(async (req) => await router.handle(req));

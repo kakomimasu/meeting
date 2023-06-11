@@ -1,11 +1,4 @@
 export class Database {
-  static async open() {
-    const kv = await Deno.openKv();
-    return new Database(kv);
-  }
-  constructor(kv) {
-    this.kv = kv;
-  }
   async keyList(paramPrefix) {
     return await this.kv.list({ prefix: [paramPrefix] });
   }
@@ -44,7 +37,6 @@ export class Database {
     await this.kv.delete(["users_by_session", session]);
   }
   async getUserBySession(session) {
-    console.log("★session = ", session);
     if (!session) {
       return;
     }
