@@ -13,10 +13,10 @@
   <div>
     <a href="/auth/signin">signin</a>
     <a href="/auth/signout">signout</a>
-    <% if (user) { %>
-    <%= user.name %> (<%= user.id %>)
-    <img src="<%= user.avatarUrl %>">
-    <% } %>
+    <div id="logined">
+      <span id="user-name"></span>
+      <img id="user-avatar-url">
+    </div>
     <p>ID: <span id="my-id"></span></p>
     <div>
       <button id="join">join</button>

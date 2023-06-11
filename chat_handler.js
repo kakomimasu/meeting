@@ -1,6 +1,6 @@
 import { Comment } from "./comment.js";
 
-export class Chat {
+export class ChatHandler {
   async handle(req) {
     if (req.method == "GET") {
       const accept = req.headers.get("accept");

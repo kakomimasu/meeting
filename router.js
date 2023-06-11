@@ -6,16 +6,16 @@ export class Router {
     const { pathname } = new URL(req.url);
     const cookie = getCookies(req.headers);
     const user = await this.db.getUserBySession(cookie.session);
-    if (pathname == "/") {
-      return await this.index.handle(user);
-    } else if (pathname == "/auth/signin") {
+    if (pathname == "/auth/signin") {
       return await this.signin.handle();
     } else if (pathname == "/auth/signout") {
       return await this.signout.handle(req);
     } else if (pathname == "/auth/oauth2callback") {
       return await this.oauthCallback.handle(req);
     } else if (pathname == "/chat") {
-      return await this.chat.handle(req);
+      return await this.chatHandler.handle(req);
+    } else if (pathname == "/user") {
+      return await this.userHandler.handle(user);
     } else {
       return serveDir(req, { fsRoot: "./static/" });
     }

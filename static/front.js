@@ -39,3 +39,14 @@ send.addEventListener("click", async () => {
     body: form,
   });
 });
+
+const logined = document.getElementById("logined");
+const userName = document.getElementById("user-name");
+const userAvatarUrl = document.getElementById("user-avatar-url");
+
+const user = await (await fetch("/user")).json();
+logined.style.display = user == null ? "none" : "block";
+if (user != null) {
+  userName.textContent = user.name;
+  userAvatarUrl.src = user.avatarUrl;
+}
