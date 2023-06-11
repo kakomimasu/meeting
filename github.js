@@ -1,25 +1,11 @@
-import { OAuth2Client } from "https://deno.land/x/oauth2_client@v1.0.0/mod.ts";
-
 export class GitHub {
-  constructor() {
-    this.client = new OAuth2Client({
-      clientId: Deno.env.get("GITHUB_CLIENT_ID"),
-      clientSecret: Deno.env.get("GITHUB_CLIENT_SECRET"),
-      authorizationEndpointUri: "https://github.com/login/oauth/authorize",
-      tokenUri: "https://github.com/login/oauth/access_token",
-      defaults: {
-        scope: "read:user",
-      },
-    });
-  }
-
   async getAuthorizationUri(state) {
-    return await this.client.code.getAuthorizationUri({ state });
+    return await this.oauthClient.code.getAuthorizationUri({ state });
   }
 
   async getAuthenticatedUser(req, oauthSession) {
     const { state, codeVerifier } = oauthSession;
-    const token = await this.client.code.getToken(req.url, {
+    const token = await this.oauthClient.code.getToken(req.url, {
       state,
       codeVerifier,
     });

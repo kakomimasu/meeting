@@ -1,5 +1,6 @@
 import "std/dotenv/load.ts";
 import { serve } from "std/http/server.ts";
+import { OAuth2Client } from "https://deno.land/x/oauth2_client@v1.0.0/mod.ts";
 import { Database } from "./database.js";
 import { GitHub } from "./github.js";
 import { Signout } from "./signout.js";
@@ -19,6 +20,15 @@ const oauthCallback = new OAuthCallback();
 const chatHandler = new ChatHandler();
 const userHandler = new UserHandler();
 const router = new Router();
+const oauthClient = new OAuth2Client({
+  clientId: Deno.env.get("GITHUB_CLIENT_ID"),
+  clientSecret: Deno.env.get("GITHUB_CLIENT_SECRET"),
+  authorizationEndpointUri: "https://github.com/login/oauth/authorize",
+  tokenUri: "https://github.com/login/oauth/access_token",
+  defaults: {
+    scope: "read:user",
+  },
+});
 
 // オブジェクトを接続する
 db.kv = kv;
@@ -29,6 +39,7 @@ signout.db = db;
 oauthCallback.db = db;
 oauthCallback.github = github;
 chatHandler.db = db;
+github.oauthClient = oauthClient;
 router.db = db;
 router.oauthCallback = oauthCallback;
 router.signin = signin;
