@@ -1,11 +1,6 @@
 import { deleteCookie, getCookies, setCookie } from "std/http/cookie.ts";
 
 export class OAuthCallback {
-  constructor({ db, github }) {
-    this.db = db;
-    this.github = github;
-  }
-
   async handle(req) {
     const cookies = getCookies(req.headers);
     const oauthSessionCookie = cookies["oauth-session"];

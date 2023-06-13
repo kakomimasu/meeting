@@ -1,10 +1,6 @@
 import { Comment } from "./comment.js";
 
 export class ChatHandler {
-  constructor({ db }) {
-    this.db = db;
-  }
-
   async handle(req) {
     if (req.method == "GET") {
       const accept = req.headers.get("accept");

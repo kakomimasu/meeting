@@ -1,11 +1,6 @@
 import { setCookie } from "std/http/cookie.ts";
 
 export class Signin {
-  constructor({ db, github }) {
-    this.db = db;
-    this.github = github;
-  }
-
   async handle() {
     const oauthSession = crypto.randomUUID();
     const state = crypto.randomUUID();

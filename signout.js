@@ -1,10 +1,6 @@
 import { deleteCookie, getCookies } from "std/http/cookie.ts";
 
 export class Signout {
-  constructor({ db }) {
-    this.db = db;
-  }
-
   async handle(req) {
     const cookies = getCookies(req.headers);
     if (cookies.session) {
