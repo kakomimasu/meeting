@@ -1,4 +1,8 @@
 export class Database {
+  constructor({ kv }) {
+    this.kv = kv;
+  }
+
   async keyList(paramPrefix) {
     return await this.kv.list({ prefix: [paramPrefix] });
   }

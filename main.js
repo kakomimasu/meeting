@@ -10,16 +10,7 @@ import { ChatHandler } from "./chat_handler.js";
 import { UserHandler } from "./user_handler.js";
 import { Router } from "./router.js";
 
-// オブジェクトを作成する
-const kv = await Deno.openKv();
-const db = new Database();
-const github = new GitHub();
-const signin = new Signin();
-const signout = new Signout();
-const oauthCallback = new OAuthCallback();
-const chatHandler = new ChatHandler();
-const userHandler = new UserHandler();
-const router = new Router();
+// オブジェクトを作成して接続する
 const oauthClient = new OAuth2Client({
   clientId: Deno.env.get("GITHUB_CLIENT_ID"),
   clientSecret: Deno.env.get("GITHUB_CLIENT_SECRET"),
@@ -29,22 +20,21 @@ const oauthClient = new OAuth2Client({
     scope: "read:user",
   },
 });
-
-// オブジェクトを接続する
-db.kv = kv;
-oauthCallback.db = db;
-signin.db = db;
-signin.github = github;
-signout.db = db;
-oauthCallback.db = db;
-oauthCallback.github = github;
-chatHandler.db = db;
-github.oauthClient = oauthClient;
-router.db = db;
-router.oauthCallback = oauthCallback;
-router.signin = signin;
-router.signout = signout;
-router.chatHandler = chatHandler;
-router.userHandler = userHandler;
+const kv = await Deno.openKv();
+const db = new Database({ kv });
+const github = new GitHub({ oauthClient });
+const signin = new Signin({ db, github });
+const signout = new Signout({ db });
+const oauthCallback = new OAuthCallback({ db, github });
+const chatHandler = new ChatHandler({ db });
+const userHandler = new UserHandler();
+const router = new Router({
+  db,
+  signin,
+  signout,
+  oauthCallback,
+  chatHandler,
+  userHandler,
+});
 
 serve(async (req) => await router.handle(req));

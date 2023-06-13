@@ -2,6 +2,17 @@ import { serveDir } from "std/http/file_server.ts";
 import { getCookies } from "std/http/cookie.ts";
 
 export class Router {
+  constructor(
+    { db, signin, signout, oauthCallback, chatHandler, userHandler },
+  ) {
+    this.db = db;
+    this.signin = signin;
+    this.signout = signout;
+    this.oauthCallback = oauthCallback;
+    this.chatHandler = chatHandler;
+    this.userHandler = userHandler;
+  }
+
   async handle(req) {
     const { pathname } = new URL(req.url);
     const cookie = getCookies(req.headers);

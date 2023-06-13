@@ -1,4 +1,8 @@
 export class GitHub {
+  constructor({ oauthClient }) {
+    this.oauthClient = oauthClient;
+  }
+
   async getAuthorizationUri(state) {
     return await this.oauthClient.code.getAuthorizationUri({ state });
   }
