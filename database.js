@@ -5,7 +5,9 @@ export const keyList = (paramPrefix) => {
 };
 
 export const loadMessages = async () => {
-  const data = (await kv.get(["chat"])).value;
+  const a = await kv.get(["chat"]);
+  console.log(a);
+  const data = a.value;
   if (!data) return [];
   return data;
 };
@@ -17,7 +19,7 @@ export const writeMessage = async (msg) => {
 };
 
 export const write = async (key, value) => {
-  await kv.set(key, value);
+  await kv.set([key], value);
 };
 
 export const getAndDeleteOauthSession = async (session) => {

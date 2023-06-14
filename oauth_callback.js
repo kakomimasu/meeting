@@ -15,6 +15,11 @@ export const handleOAuthCallback = async (req) => {
     return new Response("Missing oauth session", { status: 400 });
   }
   const ghUser = await getAuthenticatedUser(req, oauthSession);
+
+  if (ghUser.login != "ninja03" && ghUser.login != "takameron" && ghUser.login != "kamekyame") {
+    return new Response("not member", { status: 400 });
+  }
+
   const session = crypto.randomUUID();
   await setUserWithSession({
     id: String(ghUser.id),

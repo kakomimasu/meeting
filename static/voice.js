@@ -1,23 +1,26 @@
 /// <reference lib="dom"/>
 
-const {
-  nowInSec,
-  SkyWayAuthToken,
-  SkyWayContext,
-  SkyWayRoom,
-  SkyWayStreamFactory,
-  uuidV4,
-} = skyway_room;
+const { SkyWayContext, SkyWayRoom, SkyWayStreamFactory } = skyway_room;
 
-const APP_ID = "";
-const SECRET_KEY = "";
 const ROOM_NAME = "kakomimasu-meeting";
 
+async function getToken() {
+  const res = await fetch("/skyway/token");
+  if (!res.ok) throw new Error("Failed to fetch skyway token");
+  const { token } = await res.json();
+  return token;
+}
+
 const localVideo = document.getElementById("local-video");
-const buttonArea = document.getElementById("button-area");
 const remoteMediaArea = document.getElementById("remote-media-area");
 const myId = document.getElementById("my-id");
 const joinButton = document.getElementById("join");
+const leaveButton = document.getElementById("leave");
+
+const token = await getToken();
+
+let audioStream = null;
+let videoStream = null;
 
 async function joinRoom() {
   // room入室
@@ -29,41 +32,46 @@ async function joinRoom() {
   const me = await room.join();
 
   myId.textContent = me.id;
-  // await me.publish(audio);
-  // await me.publish(video);
+  if (audioStream) await me.publish(audioStream);
+  if (videoStream) await me.publish(videoStream);
 
-  const subscribeAndAttach = (publication) => {
+  const subscribeAndAttach = async (publication) => {
     // 3
     if (publication.publisher.id === me.id) return;
 
-    const subscribeButton = document.createElement("button"); // 3-1
-    subscribeButton.textContent =
-      `${publication.publisher.id}: ${publication.contentType}`;
+    // const subscribeButton = document.createElement("button"); // 3-1
+    // subscribeButton.textContent =
+    //   `${publication.publisher.id}: ${publication.contentType}`;
 
-    buttonArea.appendChild(subscribeButton);
+    // buttonArea.appendChild(subscribeButton);
+    // subscribeButton.onclick = async () => {
+    //   // 3-2
+    // };
+    const { stream } = await me.subscribe(publication.id); // 3-2-1
 
-    subscribeButton.onclick = async () => {
-      // 3-2
-      const { stream } = await me.subscribe(publication.id); // 3-2-1
+    let newMedia; // 3-2-2
+    switch (stream.track.kind) {
+      case "video":
+        newMedia = document.createElement("video");
+        newMedia.playsInline = true;
+        newMedia.autoplay = true;
+        break;
+      case "audio":
+        newMedia = document.createElement("audio");
+        newMedia.controls = false;
+        newMedia.autoplay = true;
+        break;
+      default:
+        return;
+    }
+    stream.attach(newMedia); // 3-2-3
+    remoteMediaArea.appendChild(newMedia);
 
-      let newMedia; // 3-2-2
-      switch (stream.track.kind) {
-        case "video":
-          newMedia = document.createElement("video");
-          newMedia.playsInline = true;
-          newMedia.autoplay = true;
-          break;
-        case "audio":
-          newMedia = document.createElement("audio");
-          newMedia.controls = true;
-          newMedia.autoplay = true;
-          break;
-        default:
-          return;
-      }
-      stream.attach(newMedia); // 3-2-3
-      remoteMediaArea.appendChild(newMedia);
-    };
+    leaveButton.addEventListener("click", () => {
+      me.leave();
+      remoteMediaArea.innerHTML = "";
+      // room.dispose();
+    });
   };
 
   room.publications.forEach(subscribeAndAttach); // 1
@@ -74,71 +82,24 @@ async function joinRoom() {
   });
 }
 
-const token = new SkyWayAuthToken({
-  jti: uuidV4(),
-  iat: nowInSec(),
-  exp: nowInSec() + 60 * 60 * 24,
-  scope: {
-    app: {
-      id: APP_ID,
-      turn: true,
-      actions: ["read"],
-      channels: [
-        {
-          id: "*",
-          name: "*",
-          actions: ["write"],
-          members: [
-            {
-              id: "*",
-              name: "*",
-              actions: ["write"],
-              publication: {
-                actions: ["write"],
-              },
-              subscription: {
-                actions: ["write"],
-              },
-            },
-          ],
-          sfuBots: [
-            {
-              actions: ["write"],
-              forwardings: [
-                {
-                  actions: ["write"],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  },
-}).encode(SECRET_KEY);
-
 (async () => {
   // 1
   // 自分のカメラと音声を取得 & videoタグにattach
-  const { audio, video } = await SkyWayStreamFactory
-    .createMicrophoneAudioAndCameraStream();
-  video.attach(localVideo);
-  await localVideo.play();
+  try {
+    audioStream = await SkyWayStreamFactory.createMicrophoneAudioStream();
+  } catch (_e) {
+    console.error("マイクが取得できません。");
+  }
+  try {
+    videoStream = await SkyWayStreamFactory.createCameraVideoStream();
+  } catch (_e) {
+    console.error("カメラが取得できません。");
+  }
+
+  if (videoStream) {
+    videoStream.attach(localVideo);
+    await localVideo.play();
+  }
 
   joinButton.addEventListener("click", joinRoom);
-})(); // 1
-
-// カメラ映像取得
-// navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-//   .then((stream) => {
-//     // 成功時にvideo要素にカメラ映像をセットし、再生
-//     const videoElm = document.getElementById("my-video");
-//     videoElm.srcObject = stream;
-//     videoElm.play();
-//     // 着信時に相手にカメラ映像を返せるように、グローバル変数に保存しておく
-//     localStream = stream;
-//   }).catch((error) => {
-//     // 失敗時にはエラーログを出力
-//     console.error("mediaDevice.getUserMedia() error:", error);
-//     return;
-//   });
+})();

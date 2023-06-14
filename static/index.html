@@ -10,25 +10,38 @@
 </head>
 
 <body>
+
+  <h1>Kakomimasu Meeting</h1>
+
   <div>
-    <a href="/auth/signin">signin</a>
-    <a href="/auth/signout">signout</a>
-    <div id="logined">
-      <span id="user-name"></span>
-      <img id="user-avatar-url">
-    </div>
-    <p>ID: <span id="my-id"></span></p>
-    <div>
-      <button id="join">join</button>
-    </div>
-    <video id="local-video" width="400px" muted playsinline></video>
-    <div id="button-area"></div>
-    <div id="remote-media-area"></div>
-    <!-- <script type="module" src="main.js"></script> -->
+    <img id="user-icon" width="32">
+    <span id="user-name"></span>
+    <a id="signin" href="/auth/signin">ログイン</a>
+    <a id="signout" href="/auth/signout">ログアウト</a>
   </div>
-  <table id="messages"></table>
-  <input id="input-msg" />
-  <button id="send">送信</button>
+
+  <div class="main">
+    <div class="video">
+      <p>ID: <span id="my-id"></span></p>
+      <div>
+        <button id="join">join</button>
+        <button id="leave">leave</button>
+      </div>
+      <video id="local-video" width="400px" muted playsinline></video>
+      <!-- <div id="button-area"></div> -->
+      <div id="remote-media-area"></div>
+    </div>
+
+    <div class="chat">
+      <div class="message-div">
+        <table id="messages"></table>
+      </div>
+      <div>
+        <input id="input-msg" />
+        <button id="send">送信</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

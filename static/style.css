@@ -1,1 +1,36 @@
 @import url("https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css");
+
+.main {
+  display: flex;
+  flex-direction: row;
+}
+
+.video {
+  width: 50%;
+}
+
+.chat {
+  width: 50%;
+}
+
+.message-div {
+  height: 350px;
+  overflow: scroll;
+}
+
+#local-video {
+  position: absolute;
+  width: 128px;
+}
+
+#remote-media-area {
+
+}
+
+#input-msg {
+  display: inline;
+}
+
+#send {
+  display: inline
+}

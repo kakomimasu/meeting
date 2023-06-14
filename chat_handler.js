@@ -1,7 +1,7 @@
 import { Comment } from "./comment.js";
 import { keyList, loadMessages, write, writeMessage } from "./database.js";
 
-export const handleChat = async (req) => {
+export const handleChat = async (req, user) => {
   if (req.method == "GET") {
     const accept = req.headers.get("accept");
     if (accept === "text/event-stream") {
@@ -18,8 +18,8 @@ export const handleChat = async (req) => {
   } else if (req.method == "POST") {
     const form = await req.formData();
     const msg = form.get("msg");
-    await post(msg);
-    // await post2("user", msg);
+    // await post(msg);
+    await post2(user, msg);
     return Response.json({ ok: true });
   }
 };
@@ -34,14 +34,14 @@ const connect = () => {
           const chunk = `data: ${JSON.stringify(data)}\n\n`;
           controller.enqueue(new TextEncoder().encode(chunk));
         } catch (e) {
-          console.error(`Error refreshing chat`, e);
+          // console.error(`Error refreshing chat`, e);
         }
       });
-      console.log("Opened stream");
+      // console.log("Opened stream");
     },
     cancel() {
       bc.close();
-      console.log("Closed stream");
+      // console.log("Closed stream");
     },
   });
   return body;
@@ -60,7 +60,12 @@ export const getList = async () => {
 
 const post2 = async (user, message) => {
   const comment = new Comment(user, message);
-  await write(comment.id, comment);
+  await write("chat-" + comment.id, comment);
+  // await writeMessage(JSON.stringify(comment));
+
+  // // below test
+  // const bc = new BroadcastChannel(`chat`);
+  // bc.postMessage("" + Date.now());
 };
 
 const post = async (msg) => {
