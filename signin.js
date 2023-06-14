@@ -2,7 +2,7 @@ import { setCookie } from "std/http/cookie.ts";
 import { getAuthorizationUri } from "./github.js";
 import { setOauthSession } from "./database.js";
 
-export async function handleSignin() {
+export const handleSignin = async () => {
   const oauthSession = crypto.randomUUID();
   const state = crypto.randomUUID();
   const { uri, codeVerifier } = await getAuthorizationUri(state);
@@ -20,4 +20,4 @@ export async function handleSignin() {
     httpOnly: true,
   });
   return resp;
-}
+};

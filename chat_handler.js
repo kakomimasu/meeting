@@ -1,7 +1,7 @@
 import { Comment } from "./comment.js";
 import { keyList, loadMessages, write, writeMessage } from "./database.js";
 
-export async function handleChat(req) {
+export const handleChat = async (req) => {
   if (req.method == "GET") {
     const accept = req.headers.get("accept");
     if (accept === "text/event-stream") {
@@ -22,9 +22,9 @@ export async function handleChat(req) {
     // await post2("user", msg);
     return Response.json({ ok: true });
   }
-}
+};
 
-function connect() {
+const connect = () => {
   const bc = new BroadcastChannel(`chat`);
   const body = new ReadableStream({
     start(controller) {
@@ -45,9 +45,9 @@ function connect() {
     },
   });
   return body;
-}
+};
 
-async function getList() {
+export const getList = async () => {
   // キーが chat- から始まるリストを取得
   const dbCommentList = await keyList("chat-");
 
@@ -56,19 +56,19 @@ async function getList() {
     commentList.push(JSON.stringify(dbComment));
   }
   return commentList;
-}
+};
 
-async function post2(user, message) {
+const post2 = async (user, message) => {
   const comment = new Comment(user, message);
   await write(comment.id, comment);
-}
+};
 
-async function post(msg) {
+const post = async (msg) => {
   await writeMessage(msg);
   const bc = new BroadcastChannel(`chat`);
   bc.postMessage("" + Date.now());
-}
+};
 
-async function load() {
+const load = async () => {
   return await loadMessages();
-}
+};

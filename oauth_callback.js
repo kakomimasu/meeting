@@ -2,7 +2,7 @@ import { deleteCookie, getCookies, setCookie } from "std/http/cookie.ts";
 import { getAndDeleteOauthSession, setUserWithSession } from "./database.js";
 import { getAuthenticatedUser } from "./github.js";
 
-export async function handleOAuthCallback(req) {
+export const handleOAuthCallback = async (req) => {
   const cookies = getCookies(req.headers);
   const oauthSessionCookie = cookies["oauth-session"];
   if (!oauthSessionCookie) {
@@ -35,4 +35,4 @@ export async function handleOAuthCallback(req) {
     maxAge: 60 * 60 * 24 * 365,
   });
   return resp;
-}
+};
