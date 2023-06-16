@@ -1,22 +1,32 @@
 import { Head } from "$fresh/runtime.ts";
 
-export default function Index() {
+export function handler(_req, ctx) {
+  const user = ctx.state.user;
+  return ctx.render({ user });
+}
+
+export default function Index(props) {
+  const user = props.data.user;
   return (
     <>
       <Head>
         <link rel="stylesheet" href="style.css" />
         <meta charset="utf-8" />
         <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js" />
-        <script type="module" src="front.js" />
+        <script type="module" src="chat.js" />
         <script type="module" src="voice.js" />
       </Head>
       <h1>Kakomimasu Meeting</h1>
 
       <div>
-        <img id="user-icon" width="32" />
-        <span id="user-name"></span>
-        <a id="signin" href="/auth/signin">ログイン</a>
-        <a id="signout" href="/auth/signout">ログアウト</a>
+        <img src={user ? user.avatarUrl : ""} width={32} />
+        <span>{user ? user.name : "ゲスト"}</span>
+        <a href="/auth/signin" style={{ display: user ? "none" : "inline" }}>
+          ログイン
+        </a>
+        <a href="/auth/signout" style={{ display: user ? "inline" : "none" }}>
+          ログアウト
+        </a>
       </div>
 
       <div class="main">
