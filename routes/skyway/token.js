@@ -49,11 +49,9 @@ function getNewToken() {
   }).encode(SECRET_KEY);
 }
 
-export const handleSkywayToken = (req, user) => {
-  // console.log(user);
-  if (req.method !== "GET") {
-    return new Response("Method not allowed", { status: 405 });
-  }
-  const token = getNewToken();
-  return Response.json({ token });
+export const handler = {
+  GET() {
+    const token = getNewToken();
+    return Response.json({ token });
+  },
 };

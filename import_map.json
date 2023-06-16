@@ -1,6 +1,0 @@
-{
-  "imports": {
-    "std/": "https://deno.land/std@0.190.0/",
-    "skyway-token": "https://esm.sh/@skyway-sdk/token@1.2.4"
-  }
-}

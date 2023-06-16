@@ -1,5 +1,3 @@
-/// <reference lib="dom"/>
-
 const { SkyWayContext, SkyWayRoom, SkyWayStreamFactory } = skyway_room;
 
 const ROOM_NAME = "kakomimasu-meeting";

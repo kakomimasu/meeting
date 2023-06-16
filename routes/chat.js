@@ -1,8 +1,18 @@
-import { Comment } from "./comment.js";
-import { keyList, loadMessages, write, writeMessage } from "./database.js";
+import { Comment } from "@/utils/comment.js";
+import {
+  keyList,
+  loadMessages,
+  write,
+  writeMessage,
+} from "@/utils/database.js";
 
-export const handleChat = async (req, user) => {
-  if (req.method == "GET") {
+export const handler = {
+  async GET(req, ctx) {
+    const user = ctx.state.user;
+    if (!user) {
+      return new Response(null, { status: 403 });
+    }
+
     const accept = req.headers.get("accept");
     if (accept === "text/event-stream") {
       const body = connect();
@@ -15,16 +25,22 @@ export const handleChat = async (req, user) => {
     const data = await load();
     // const data = await getList();
     return Response.json(data);
-  } else if (req.method == "POST") {
+  },
+  async POST(req, ctx) {
+    const user = ctx.state.user;
+    if (!user) {
+      return new Response(null, { status: 403 });
+    }
+
     const form = await req.formData();
     const msg = form.get("msg");
-    // await post(msg);
-    await post2(user, msg);
+    await post(msg);
+    // await post2(user, msg);
     return Response.json({ ok: true });
-  }
+  },
 };
 
-const connect = () => {
+function connect() {
   const bc = new BroadcastChannel(`chat`);
   const body = new ReadableStream({
     start(controller) {
@@ -45,9 +61,9 @@ const connect = () => {
     },
   });
   return body;
-};
+}
 
-export const getList = async () => {
+async function getList() {
   // キーが chat- から始まるリストを取得
   const dbCommentList = await keyList("chat-");
 
@@ -56,9 +72,9 @@ export const getList = async () => {
     commentList.push(JSON.stringify(dbComment));
   }
   return commentList;
-};
+}
 
-const post2 = async (user, message) => {
+async function post2(user, message) {
   const comment = new Comment(user, message);
   await write("chat-" + comment.id, comment);
   // await writeMessage(JSON.stringify(comment));
@@ -66,14 +82,14 @@ const post2 = async (user, message) => {
   // // below test
   // const bc = new BroadcastChannel(`chat`);
   // bc.postMessage("" + Date.now());
-};
+}
 
-const post = async (msg) => {
+async function post(msg) {
   await writeMessage(msg);
   const bc = new BroadcastChannel(`chat`);
   bc.postMessage("" + Date.now());
-};
+}
 
-const load = async () => {
+async function load() {
   return await loadMessages();
-};
+}
