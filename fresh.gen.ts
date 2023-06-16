@@ -9,7 +9,6 @@ import * as $3 from "./routes/auth/signout.js";
 import * as $4 from "./routes/chat.js";
 import * as $5 from "./routes/index.jsx";
 import * as $6 from "./routes/skyway/token.js";
-import * as $7 from "./routes/user.js";
 
 const manifest = {
   routes: {
@@ -20,7 +19,6 @@ const manifest = {
     "./routes/chat.js": $4,
     "./routes/index.jsx": $5,
     "./routes/skyway/token.js": $6,
-    "./routes/user.js": $7,
   },
   islands: {},
   baseUrl: import.meta.url,
