@@ -13,6 +13,7 @@ import * as $7 from "./routes/chat.js";
 import * as $8 from "./routes/index.jsx";
 import * as $9 from "./routes/skyway/token.js";
 import * as $$0 from "./islands/Chat.jsx";
+import * as $$1 from "./islands/Video.jsx";
 
 const manifest = {
   routes: {
@@ -29,6 +30,7 @@ const manifest = {
   },
   islands: {
     "./islands/Chat.jsx": $$0,
+    "./islands/Video.jsx": $$1,
   },
   baseUrl: import.meta.url,
 };
