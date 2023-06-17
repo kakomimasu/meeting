@@ -1,4 +1,4 @@
-import { Head } from "$fresh/runtime.ts";
+import { asset, Head } from "$fresh/runtime.ts";
 import User from "@/components/User.jsx";
 import Chat from "@/islands/Chat.jsx";
 
@@ -15,7 +15,7 @@ export default function Page({ data }) {
     <>
       <Head>
         <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js" />
-        <script type="module" src="voice.js" />
+        <script type="module" src={asset("voice.js")} />
       </Head>
 
       <User user={user} />

@@ -6,12 +6,12 @@
 
 import "$std/dotenv/load.ts";
 
-import { start, RenderFunction } from "$fresh/server.ts";
+import { start } from "$fresh/server.ts";
 import manifest from "./fresh.gen.ts";
 
-const render: RenderFunction = (ctx, render) => {
-  ctx.lang = "ja";
-  render();
-};
-
-await start(manifest, { render });
+await start(manifest, {
+  render: (ctx, render) => {
+    ctx.lang = "ja";
+    render();
+  },
+});

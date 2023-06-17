@@ -2,26 +2,30 @@
 // This file SHOULD be checked into source version control.
 // This file is automatically updated during development when running `dev.ts`.
 
-import * as $0 from "./routes/_app.jsx";
-import * as $1 from "./routes/_middleware.js";
-import * as $2 from "./routes/auth/oauth2callback.js";
-import * as $3 from "./routes/auth/signin.js";
-import * as $4 from "./routes/auth/signout.js";
-import * as $5 from "./routes/chat.js";
-import * as $6 from "./routes/index.jsx";
-import * as $7 from "./routes/skyway/token.js";
+import * as $0 from "./routes/_404.jsx";
+import * as $1 from "./routes/_500.jsx";
+import * as $2 from "./routes/_app.jsx";
+import * as $3 from "./routes/_middleware.js";
+import * as $4 from "./routes/auth/oauth2callback.js";
+import * as $5 from "./routes/auth/signin.js";
+import * as $6 from "./routes/auth/signout.js";
+import * as $7 from "./routes/chat.js";
+import * as $8 from "./routes/index.jsx";
+import * as $9 from "./routes/skyway/token.js";
 import * as $$0 from "./islands/Chat.jsx";
 
 const manifest = {
   routes: {
-    "./routes/_app.jsx": $0,
-    "./routes/_middleware.js": $1,
-    "./routes/auth/oauth2callback.js": $2,
-    "./routes/auth/signin.js": $3,
-    "./routes/auth/signout.js": $4,
-    "./routes/chat.js": $5,
-    "./routes/index.jsx": $6,
-    "./routes/skyway/token.js": $7,
+    "./routes/_404.jsx": $0,
+    "./routes/_500.jsx": $1,
+    "./routes/_app.jsx": $2,
+    "./routes/_middleware.js": $3,
+    "./routes/auth/oauth2callback.js": $4,
+    "./routes/auth/signin.js": $5,
+    "./routes/auth/signout.js": $6,
+    "./routes/chat.js": $7,
+    "./routes/index.jsx": $8,
+    "./routes/skyway/token.js": $9,
   },
   islands: {
     "./islands/Chat.jsx": $$0,
