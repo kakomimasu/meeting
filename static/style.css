@@ -9,28 +9,8 @@
   width: 50%;
 }
 
-.chat {
-  width: 50%;
-}
-
-.message-div {
-  height: 350px;
-  overflow: scroll;
-}
-
 #local-video {
   position: absolute;
   width: 128px;
 }
 
-#remote-media-area {
-
-}
-
-#input-msg {
-  display: inline;
-}
-
-#send {
-  display: inline
-}

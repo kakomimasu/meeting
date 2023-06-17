@@ -37,7 +37,7 @@ export default function Page({ data }) {
           <div id="remote-media-area"></div>
         </div>
 
-        <Chat />
+        <Chat user={user} />
       </div>
     </>
   );
