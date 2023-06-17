@@ -14,17 +14,18 @@ export default function Page({ data }) {
   return (
     <>
       <Head>
-        <link rel="stylesheet" href="style.css" />
-        <meta charset="utf-8" />
         <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js" />
         <script type="module" src="voice.js" />
       </Head>
-      <h1>Kakomimasu Meeting</h1>
 
       <User user={user} />
 
-      <div class="main">
-        <div class="video">
+      <div
+        style={{ display: "flex", flexDirection: "row" }}
+      >
+        <div
+          style={{ width: "50%" }}
+        >
           <p>
             ID: <span id="my-id"></span>
           </p>
@@ -32,7 +33,14 @@ export default function Page({ data }) {
             <button id="join">join</button>
             <button id="leave">leave</button>
           </div>
-          <video id="local-video" width="400px" muted playsinline></video>
+          <video
+            id="local-video"
+            width="400px"
+            muted
+            playsinline
+            style={{ position: "absolute", width: "128px" }}
+          >
+          </video>
           {/*<div id="button-area"></div>*/}
           <div id="remote-media-area"></div>
         </div>
