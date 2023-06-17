@@ -49,7 +49,9 @@ function getNewToken() {
   }).encode(SECRET_KEY);
 }
 
-export function handler() {
-  const token = getNewToken();
-  return Response.json({ token });
-}
+export const handler = {
+  GET() {
+    const token = getNewToken();
+    return Response.json({ token });
+  },
+};

@@ -1,33 +1,27 @@
 import { Head } from "$fresh/runtime.ts";
+import User from "@/components/User.jsx";
+import Chat from "@/islands/Chat.jsx";
 
-export function handler(_req, ctx) {
-  const user = ctx.state.user;
-  return ctx.render({ user });
-}
+export const handler = {
+  GET(_req, ctx) {
+    const user = ctx.state.user;
+    return ctx.render({ user });
+  },
+};
 
-export default function Index(props) {
-  const user = props.data.user;
+export default function Page({ data }) {
+  const { user } = data;
   return (
     <>
       <Head>
         <link rel="stylesheet" href="style.css" />
         <meta charset="utf-8" />
         <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js" />
-        <script type="module" src="chat.js" />
         <script type="module" src="voice.js" />
       </Head>
       <h1>Kakomimasu Meeting</h1>
 
-      <div>
-        <img src={user ? user.avatarUrl : ""} width={32} />
-        <span>{user ? user.name : "ゲスト"}</span>
-        <a href="/auth/signin" style={{ display: user ? "none" : "inline" }}>
-          ログイン
-        </a>
-        <a href="/auth/signout" style={{ display: user ? "inline" : "none" }}>
-          ログアウト
-        </a>
-      </div>
+      <User user={user} />
 
       <div class="main">
         <div class="video">
@@ -43,15 +37,7 @@ export default function Index(props) {
           <div id="remote-media-area"></div>
         </div>
 
-        <div class="chat">
-          <div class="message-div">
-            <table id="messages"></table>
-          </div>
-          <div>
-            <input id="input-msg" />
-            <button id="send">送信</button>
-          </div>
-        </div>
+        <Chat />
       </div>
     </>
   );

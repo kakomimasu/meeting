@@ -5,45 +5,47 @@ import {
 } from "@/utils/database.js";
 import { getAuthenticatedUser } from "@/utils/github.js";
 
-export async function handler(req) {
-  const cookies = getCookies(req.headers);
-  const oauthSessionCookie = cookies["oauth-session"];
-  if (!oauthSessionCookie) {
-    return new Response("Missing oauth session", { status: 400 });
-  }
-  const oauthSession = await getAndDeleteOauthSession(
-    oauthSessionCookie,
-  );
-  if (!oauthSession) {
-    return new Response("Missing oauth session", { status: 400 });
-  }
-  const ghUser = await getAuthenticatedUser(req, oauthSession);
+export const handler = {
+  async GET(req) {
+    const cookies = getCookies(req.headers);
+    const oauthSessionCookie = cookies["oauth-session"];
+    if (!oauthSessionCookie) {
+      return new Response("Missing oauth session", { status: 400 });
+    }
+    const oauthSession = await getAndDeleteOauthSession(
+      oauthSessionCookie,
+    );
+    if (!oauthSession) {
+      return new Response("Missing oauth session", { status: 400 });
+    }
+    const ghUser = await getAuthenticatedUser(req, oauthSession);
 
-  if (
-    ghUser.login != "ninja03" && ghUser.login != "takameron" &&
-    ghUser.login != "kamekyame"
-  ) {
-    return new Response("not member", { status: 400 });
-  }
+    if (
+      ghUser.login != "ninja03" && ghUser.login != "takameron" &&
+      ghUser.login != "kamekyame"
+    ) {
+      return new Response("not member", { status: 400 });
+    }
 
-  const session = crypto.randomUUID();
-  await setUserWithSession({
-    id: String(ghUser.id),
-    login: ghUser.login,
-    name: ghUser.name,
-    avatarUrl: ghUser.avatar_url,
-  }, session);
-  const resp = new Response("Logged in", {
-    headers: { Location: "/" },
-    status: 307,
-  });
-  deleteCookie(resp.headers, "oauth-session");
-  setCookie(resp.headers, {
-    name: "session",
-    value: session,
-    path: "/",
-    httpOnly: true,
-    maxAge: 60 * 60 * 24 * 365,
-  });
-  return resp;
-}
+    const session = crypto.randomUUID();
+    await setUserWithSession({
+      id: String(ghUser.id),
+      login: ghUser.login,
+      name: ghUser.name,
+      avatarUrl: ghUser.avatar_url,
+    }, session);
+    const resp = new Response("Logged in", {
+      headers: { Location: "/" },
+      status: 307,
+    });
+    deleteCookie(resp.headers, "oauth-session");
+    setCookie(resp.headers, {
+      name: "session",
+      value: session,
+      path: "/",
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 365,
+    });
+    return resp;
+  },
+};
