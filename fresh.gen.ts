@@ -2,35 +2,35 @@
 // This file SHOULD be checked into source version control.
 // This file is automatically updated during development when running `dev.ts`.
 
-import * as $0 from "./routes/_404.jsx";
-import * as $1 from "./routes/_500.jsx";
-import * as $2 from "./routes/_app.jsx";
-import * as $3 from "./routes/_middleware.js";
-import * as $4 from "./routes/auth/oauth2callback.js";
-import * as $5 from "./routes/auth/signin.js";
-import * as $6 from "./routes/auth/signout.js";
-import * as $7 from "./routes/chat.js";
-import * as $8 from "./routes/index.jsx";
-import * as $9 from "./routes/skyway/token.js";
-import * as $$0 from "./islands/Chat.jsx";
-import * as $$1 from "./islands/Video.jsx";
+import * as $0 from "./routes/_404.tsx";
+import * as $1 from "./routes/_500.tsx";
+import * as $2 from "./routes/_app.tsx";
+import * as $3 from "./routes/_middleware.ts";
+import * as $4 from "./routes/auth/oauth2callback.ts";
+import * as $5 from "./routes/auth/signin.ts";
+import * as $6 from "./routes/auth/signout.ts";
+import * as $7 from "./routes/chat.ts";
+import * as $8 from "./routes/index.tsx";
+import * as $9 from "./routes/skyway/token.ts";
+import * as $$0 from "./islands/ChatArea.tsx";
+import * as $$1 from "./islands/VideoArea.tsx";
 
 const manifest = {
   routes: {
-    "./routes/_404.jsx": $0,
-    "./routes/_500.jsx": $1,
-    "./routes/_app.jsx": $2,
-    "./routes/_middleware.js": $3,
-    "./routes/auth/oauth2callback.js": $4,
-    "./routes/auth/signin.js": $5,
-    "./routes/auth/signout.js": $6,
-    "./routes/chat.js": $7,
-    "./routes/index.jsx": $8,
-    "./routes/skyway/token.js": $9,
+    "./routes/_404.tsx": $0,
+    "./routes/_500.tsx": $1,
+    "./routes/_app.tsx": $2,
+    "./routes/_middleware.ts": $3,
+    "./routes/auth/oauth2callback.ts": $4,
+    "./routes/auth/signin.ts": $5,
+    "./routes/auth/signout.ts": $6,
+    "./routes/chat.ts": $7,
+    "./routes/index.tsx": $8,
+    "./routes/skyway/token.ts": $9,
   },
   islands: {
-    "./islands/Chat.jsx": $$0,
-    "./islands/Video.jsx": $$1,
+    "./islands/ChatArea.tsx": $$0,
+    "./islands/VideoArea.tsx": $$1,
   },
   baseUrl: import.meta.url,
 };

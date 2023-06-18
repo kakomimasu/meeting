@@ -1,4 +1,6 @@
-export default function User({ user }) {
+import { User } from "@/utils/database.ts";
+
+export function UserArea({ user }: { user: User }) {
   return (
     <div>
       <img src={user ? user.avatarUrl : ""} width={32} />

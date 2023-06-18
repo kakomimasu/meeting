@@ -1,8 +1,9 @@
 import { setCookie } from "$std/http/cookie.ts";
-import { getAuthorizationUri } from "@/utils/github.js";
-import { setOauthSession } from "@/utils/database.js";
+import { getAuthorizationUri } from "@/utils/github.ts";
+import { setOauthSession } from "@/utils/database.ts";
+import { Handlers } from "$fresh/server.ts";
 
-export const handler = {
+export const handler: Handlers = {
   async GET() {
     const oauthSession = crypto.randomUUID();
     const state = crypto.randomUUID();

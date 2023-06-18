@@ -2,10 +2,11 @@ import { deleteCookie, getCookies, setCookie } from "$std/http/cookie.ts";
 import {
   getAndDeleteOauthSession,
   setUserWithSession,
-} from "@/utils/database.js";
-import { getAuthenticatedUser } from "@/utils/github.js";
+} from "@/utils/database.ts";
+import { getAuthenticatedUser } from "@/utils/github.ts";
+import { Handlers } from "$fresh/server.ts";
 
-export const handler = {
+export const handler: Handlers = {
   async GET(req) {
     const cookies = getCookies(req.headers);
     const oauthSessionCookie = cookies["oauth-session"];

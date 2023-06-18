@@ -1,12 +1,14 @@
-import { Comment } from "@/utils/comment.js";
+import { Comment } from "@/utils/comment.ts";
 import {
   keyList,
   loadMessages,
   write,
   writeMessage,
-} from "@/utils/database.js";
+} from "@/utils/database.ts";
+import { Handlers } from "$fresh/server.ts";
+import { User } from "@/utils/database.ts";
 
-export const handler = {
+export const handler: Handlers = {
   async GET(req, ctx) {
     const user = ctx.state.user;
     if (!user) {
@@ -33,7 +35,7 @@ export const handler = {
     }
 
     const form = await req.formData();
-    const msg = form.get("msg");
+    const msg = form.get("msg") as string;
     await post(msg);
     // await post2(user, msg);
     return Response.json({ ok: true });
@@ -74,7 +76,7 @@ async function getList() {
   return commentList;
 }
 
-async function post2(user, message) {
+async function post2(user: User, message: string) {
   const comment = new Comment(user, message);
   await write("chat-" + comment.id, comment);
   // await writeMessage(JSON.stringify(comment));
@@ -84,7 +86,7 @@ async function post2(user, message) {
   // bc.postMessage("" + Date.now());
 }
 
-async function post(msg) {
+async function post(msg: string) {
   await writeMessage(msg);
   const bc = new BroadcastChannel(`chat`);
   bc.postMessage("" + Date.now());

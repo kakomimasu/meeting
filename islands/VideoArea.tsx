@@ -1,6 +1,6 @@
 import { asset, Head } from "$fresh/runtime.ts";
 
-export default function Video() {
+export default function VideoArea() {
   return (
     <>
       <Head>
@@ -16,7 +16,7 @@ export default function Video() {
           <button id="join">join</button>
           <button id="leave">leave</button>
         </div>
-        <video id="local-video" width="400px" muted playsinline>
+        <video id="local-video" width="400px" muted playsInline>
         </video>
         {/*<div id="button-area"></div>*/}
         <div id="remote-media-area"></div>

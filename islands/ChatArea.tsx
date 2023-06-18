@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "preact/hooks";
 import { useSignal } from "@preact/signals";
+import { User } from "@/utils/database.ts";
 
-export default function Chat({ user }) {
-  const data = useSignal([]);
-  const input = useRef();
+export default function ChatArea({ user }: { user: User }) {
+  const data = useSignal<string[]>([]);
+  const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) {
@@ -30,6 +31,9 @@ export default function Chat({ user }) {
   }, []);
 
   const send = async () => {
+    if (!input.current) {
+      return;
+    }
     const form = new FormData();
     form.append("msg", input.current.value);
     await fetch("chat", {

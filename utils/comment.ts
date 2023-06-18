@@ -1,12 +1,15 @@
-export class Comment {
-  constructor(user, message) {
-    this.user = user;
-    this.message = message;
-    this.deleted = false;
+import { User } from "@/utils/database.ts";
 
-    this.id = new Date().getTime(); // UNIX時間のミリ秒
-    this.sentAt = new Date();
-  }
+export class Comment {
+  deleted = false;
+  id = new Date().getTime(); // UNIX時間のミリ秒
+  sentAt = new Date();
+
+  constructor(
+    public user: User,
+    public message: string,
+  ) {}
+
   delete() {
     this.deleted = true;
   }
