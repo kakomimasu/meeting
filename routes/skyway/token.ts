@@ -51,7 +51,7 @@ function getNewToken() {
   }).encode(SECRET_KEY);
 }
 
-export const handler: Handlers<Response, State> = {
+export const handler: Handlers<null, State> = {
   GET(_req, _ctx) {
     const token = getNewToken();
     return Response.json({ token });

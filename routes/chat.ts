@@ -7,8 +7,9 @@ import {
 } from "@/utils/database.ts";
 import { Handlers } from "$fresh/server.ts";
 import { User } from "@/utils/database.ts";
+import { State } from "@/routes/_middleware.ts";
 
-export const handler: Handlers = {
+export const handler: Handlers<null, State> = {
   async GET(req, ctx) {
     const user = ctx.state.user;
     if (!user) {

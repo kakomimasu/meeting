@@ -5,8 +5,9 @@ import {
 } from "@/utils/database.ts";
 import { getAuthenticatedUser } from "@/utils/github.ts";
 import { Handlers } from "$fresh/server.ts";
+import { State } from "@/routes/_middleware.ts";
 
-export const handler: Handlers = {
+export const handler: Handlers<null, State> = {
   async GET(req) {
     const cookies = getCookies(req.headers);
     const oauthSessionCookie = cookies["oauth-session"];
