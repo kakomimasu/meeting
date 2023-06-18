@@ -6,25 +6,27 @@ export default function Chat({ user }) {
   const input = useRef();
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
+
     (async () => {
-      if (!user) {
-        return;
-      }
-
       data.value = await (await fetch("/chat")).json();
-
-      let es = new EventSource(window.location.href + "chat");
-      es.addEventListener("message", (e) => {
-        data.value = JSON.parse(e.data);
-      });
-
-      es.addEventListener("error", async () => {
-        es.close();
-        const backoff = 10000 + Math.random() * 5000;
-        await new Promise((resolve) => setTimeout(resolve, backoff));
-        es = new EventSource(window.location.href + "chat");
-      });
     })();
+
+    let es = new EventSource(window.location.href + "chat");
+    es.addEventListener("message", (e) => {
+      data.value = JSON.parse(e.data);
+    });
+
+    es.addEventListener("error", async () => {
+      es.close();
+      const backoff = 10000 + Math.random() * 5000;
+      await new Promise((resolve) => setTimeout(resolve, backoff));
+      es = new EventSource(window.location.href + "chat");
+    });
+
+    return () => es.close();
   }, []);
 
   const send = async () => {
