@@ -1,5 +1,11 @@
 import { OAuth2Client } from "https://deno.land/x/oauth2_client@v1.0.0/mod.ts";
-import { User } from "@/utils/database.ts";
+
+interface GitHubUser {
+  id: string;
+  login: string;
+  name: string;
+  avatar_url: string;
+}
 
 const oauthClient = new OAuth2Client({
   clientId: Deno.env.get("GITHUB_CLIENT_ID")!,
@@ -37,5 +43,5 @@ export async function getAuthenticatedUser(
   if (!resp.ok) {
     throw new Error("Failed to fetch user");
   }
-  return await resp.json() as User;
+  return await resp.json() as GitHubUser;
 }
