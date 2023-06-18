@@ -37,13 +37,8 @@ export default function Chat({ user }) {
 
   return (
     <>
-      <div style={{ width: "50%" }}>
-        <div
-          style={{
-            height: "350px",
-            overflow: "scroll",
-          }}
-        >
+      <div class="chat">
+        <div class="chat-scroll">
           <table>
             {data.value.reverse().map((d) => (
               <tr>
@@ -53,8 +48,8 @@ export default function Chat({ user }) {
           </table>
         </div>
         <div>
-          <input ref={input} style={{ display: "inline" }} />
-          <button onClick={send} style={{ display: "inline" }}>送信</button>
+          <input ref={input} class="msg-input" />
+          <button onClick={send} class="msg-send">送信</button>
         </div>
       </div>
     </>

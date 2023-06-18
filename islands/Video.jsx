@@ -8,9 +8,7 @@ export default function Video() {
         <script type="module" src={asset("voice.js")} />
       </Head>
 
-      <div
-        style={{ width: "50%" }}
-      >
+      <div class="video">
         <p>
           ID: <span id="my-id"></span>
         </p>
@@ -18,13 +16,7 @@ export default function Video() {
           <button id="join">join</button>
           <button id="leave">leave</button>
         </div>
-        <video
-          id="local-video"
-          width="400px"
-          muted
-          playsinline
-          style={{ position: "absolute", width: "128px" }}
-        >
+        <video id="local-video" width="400px" muted playsinline>
         </video>
         {/*<div id="button-area"></div>*/}
         <div id="remote-media-area"></div>

@@ -1,0 +1,32 @@
+@import url("https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css");
+
+.main {
+  display: flex;
+  flex-direction: row;
+}
+
+.video {
+  width: 50%;
+}
+
+#local-video {
+  position: absolute;
+  width: 128px;
+}
+
+.chat {
+  width: 50%;
+}
+
+.chat-scroll {
+  height: 350px;
+  overflow: scroll;
+}
+
+.msg-input {
+  display: inline;
+}
+
+.msg-send {
+  display: inline;
+}

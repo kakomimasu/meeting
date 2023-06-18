@@ -14,7 +14,7 @@ export default function Page({ data }) {
   return (
     <>
       <User user={user} />
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div class="main">
         <Video />
         <Chat user={user} />
       </div>

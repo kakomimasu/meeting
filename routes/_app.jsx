@@ -5,10 +5,7 @@ export default function App({ Component }) {
     <>
       <Head>
         <meta charset="utf-8" />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css"
-        />
+        <link rel="stylesheet" href="style.css" />
         <title>Kakomimasu Meeting</title>
       </Head>
 
