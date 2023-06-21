@@ -1,11 +1,11 @@
-import { Handlers } from "$fresh/server.ts";
 import { SkyWayAuthToken } from "skyway-token";
-import { State } from "@/routes/_middleware.ts";
 
 const APP_ID = Deno.env.get("SKYWAY_ID") as string;
 const SECRET_KEY = Deno.env.get("SKYWAY_SECRET") as string;
 
-function getNewToken() {
+export const ROOM_NAME = "kakomimasu-meeting";
+
+export function getNewToken() {
   return new SkyWayAuthToken({
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 36000, // 10h=60*60*10
@@ -17,9 +17,7 @@ function getNewToken() {
         actions: ["read"],
         channels: [
           {
-            // id: "*",
-            // name: "*",
-            name: "kakomimasu-meeting",
+            name: ROOM_NAME,
             actions: ["write"],
             members: [
               {
@@ -50,10 +48,3 @@ function getNewToken() {
     },
   }).encode(SECRET_KEY);
 }
-
-export const handler: Handlers<null, State> = {
-  GET(_req, _ctx) {
-    const token = getNewToken();
-    return Response.json({ token });
-  },
-};

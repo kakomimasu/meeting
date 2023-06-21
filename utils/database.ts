@@ -6,8 +6,7 @@ export interface User {
   avatarUrl: string;
   name: string;
 }
-
-const kv = await Deno.openKv();
+export const kv = await Deno.openKv();
 
 export function keyList(paramPrefix: string) {
   return kv.list({ prefix: [paramPrefix] });
@@ -26,8 +25,8 @@ export async function writeMessage(msg: string) {
   await kv.set(["chat"], messages);
 }
 
-export async function write(key: any, value: any) {
-  await kv.set([key], value);
+export async function write(key: any[], value: any) {
+  await kv.set(key, value);
 }
 
 export async function getAndDeleteOauthSession(session: string) {

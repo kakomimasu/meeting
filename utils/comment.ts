@@ -1,17 +1,23 @@
 import { User } from "@/utils/database.ts";
 
 export class Comment {
-  deleted = false;
-  id = new Date().getTime(); // UNIX時間のミリ秒
-  sentAt = new Date();
+  id;
+  created_at;
+  is_deleted;
 
   constructor(
     public user: User,
     public message: string,
-  ) {}
+  ) {
+    this.id = crypto.randomUUID().toString();
+    this.user = user;
+    this.message = message;
+    this.created_at = new Date();
+    this.is_deleted = false;
+  }
 
   delete() {
-    this.deleted = true;
+    this.is_deleted = true;
   }
 
   get getId() {
@@ -23,10 +29,10 @@ export class Comment {
   get getMessage() {
     return this.message;
   }
-  get getSentAt() {
-    return this.sentAt;
+  get getCreatedAt() {
+    return this.created_at;
   }
   get isDeleted() {
-    return this.deleted;
+    return this.is_deleted;
   }
 }

@@ -1,6 +1,7 @@
 import { Comment } from "@/utils/comment.ts";
 import {
   keyList,
+  kv,
   loadMessages,
   write,
   writeMessage,
@@ -9,7 +10,9 @@ import { Handlers } from "$fresh/server.ts";
 import { User } from "@/utils/database.ts";
 import { State } from "@/routes/_middleware.ts";
 
-export const handler: Handlers<null, State> = {
+type KkmmHandlers<T> = Handlers<T, State>;
+
+export const handler: KkmmHandlers<null> = {
   async GET(req, ctx) {
     const user = ctx.state.user;
     if (!user) {
@@ -25,8 +28,8 @@ export const handler: Handlers<null, State> = {
         },
       });
     }
-    const data = await load();
-    // const data = await getList();
+    // const data = await load();
+    const data = await getList();
     return Response.json(data);
   },
   async POST(req, ctx) {
@@ -37,8 +40,8 @@ export const handler: Handlers<null, State> = {
 
     const form = await req.formData();
     const msg = form.get("msg") as string;
-    await post(msg);
-    // await post2(user, msg);
+    // await post(msg);
+    await post2(user, msg);
     return Response.json({ ok: true });
   },
 };
@@ -67,24 +70,46 @@ function connect() {
 }
 
 async function getList() {
-  // キーが chat- から始まるリストを取得
-  const dbCommentList = await keyList("chat-");
+  // const list = kv.list({ prefix: ["chats"] });
+  // let list2 = [];
+  // for await (const k of list) {
+  //   list2.push(k.value);
+  // }
+  // list2 = list2.sort((a: any, b: any) =>
+  //   b.createdAt.getTime() - a.createdAt.getTime()
+  // ).slice(0, 10);
+  // console.log(list2.map((a) => a.text));
+  // return list2;
 
+  // キーが chat- から始まるリストを取得
+  const dbCommentList = keyList("chat-");
   const commentList = [];
   for await (const dbComment of dbCommentList) {
-    commentList.push(JSON.stringify(dbComment));
+    commentList.push(dbComment.value);
   }
-  return commentList;
+  console.log(commentList);
+  const sortedList = commentList.sort((a: any, b: any) =>
+    b.created_at.getTime() - a.created_at.getTime()
+  );
+  return sortedList;
 }
 
 async function post2(user: User, message: string) {
   const comment = new Comment(user, message);
-  await write("chat-" + comment.id, comment);
+  await write(["chat-", comment.id], comment);
   // await writeMessage(JSON.stringify(comment));
 
   // // below test
   // const bc = new BroadcastChannel(`chat`);
   // bc.postMessage("" + Date.now());
+
+  // const id = crypto.randomUUID();
+  // console.log("id", id);
+  // await kv.set(["chats", id], {
+  //   user,
+  //   text: message,
+  //   createdAt: new Date(),
+  // });
 }
 
 async function post(msg: string) {

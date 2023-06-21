@@ -48,16 +48,20 @@ export default function ChatArea({ user }: { user: User }) {
       <div class="chat">
         <div class="chat-scroll">
           <table>
-            {data.value.reverse().map((d) => (
+            {data.value.map((d) => (
               <tr>
-                <td>{d}</td>
+                <td>{d.user.name}</td>
+                <td>{d.message}</td>
+                <td>{d.created_at}</td>
               </tr>
             ))}
           </table>
         </div>
         <div>
           <input ref={input} class="msg-input" />
-          <button onClick={send} class="msg-send">送信</button>
+          <button onClick={send} class="msg-send">
+            送信
+          </button>
         </div>
       </div>
     </>
