@@ -9,28 +9,24 @@
   width: 50%;
 }
 
-.chat {
-  width: 50%;
-}
-
-.message-div {
-  height: 350px;
-  overflow: scroll;
-}
-
 #local-video {
   position: absolute;
   width: 128px;
 }
 
-#remote-media-area {
-
+.chat {
+  width: 50%;
 }
 
-#input-msg {
+.chat-scroll {
+  height: 350px;
+  overflow: scroll;
+}
+
+.msg-input {
   display: inline;
 }
 
-#send {
-  display: inline
+.msg-send {
+  display: inline;
 }

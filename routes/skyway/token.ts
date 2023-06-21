@@ -1,4 +1,6 @@
+import { Handlers } from "$fresh/server.ts";
 import { SkyWayAuthToken } from "skyway-token";
+import { State } from "@/routes/_middleware.ts";
 
 const APP_ID = Deno.env.get("SKYWAY_ID");
 const SECRET_KEY = Deno.env.get("SKYWAY_SECRET");
@@ -49,11 +51,9 @@ function getNewToken() {
   }).encode(SECRET_KEY);
 }
 
-export const handleSkywayToken = (req, user) => {
-  // console.log(user);
-  if (req.method !== "GET") {
-    return new Response("Method not allowed", { status: 405 });
-  }
-  const token = getNewToken();
-  return Response.json({ token });
+export const handler: Handlers<null, State> = {
+  GET(_req, _ctx) {
+    const token = getNewToken();
+    return Response.json({ token });
+  },
 };
