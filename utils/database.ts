@@ -1,15 +1,18 @@
 import { OauthSession } from "@/utils/github.ts";
+import { Comment, User } from "@/utils/types.ts";
 
-export interface User {
-  id: string;
-  login: string;
-  avatarUrl: string;
-  name: string;
-}
 export const kv = await Deno.openKv();
 
-export function keyList(paramPrefix: string) {
-  return kv.list({ prefix: [paramPrefix] });
+export function keyList<T>(paramPrefix: string) {
+  return kv.list<T>({ prefix: [paramPrefix] });
+}
+
+export async function getComment(commentId: string) {
+  if (!commentId) {
+    return null;
+  }
+  const res = await kv.get<Comment>(["comments", commentId]);
+  return res.value;
 }
 
 export async function loadMessages() {
@@ -56,8 +59,8 @@ export async function deleteSession(session: string) {
 
 export async function getUserBySession(session: string) {
   if (!session) {
-    return;
+    return null;
   }
-  const res = await kv.get(["users_by_session", session]);
+  const res = await kv.get<User>(["users_by_session", session]);
   return res.value;
 }

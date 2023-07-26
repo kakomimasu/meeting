@@ -11,7 +11,11 @@ import * as $5 from "./routes/auth/signin.ts";
 import * as $6 from "./routes/auth/signout.ts";
 import * as $7 from "./routes/chat.ts";
 import * as $8 from "./routes/index.tsx";
-import * as $9 from "./routes/skyway/token.ts";
+import * as $9 from "./routes/manage/dump.ts";
+import * as $10 from "./routes/manage/reset.ts";
+import * as $11 from "./routes/skyway/token.ts";
+import * as $12 from "./routes/upload/files/[id].ts";
+import * as $13 from "./routes/upload/index.ts";
 import * as $$0 from "./islands/ChatArea.tsx";
 import * as $$1 from "./islands/VideoArea.tsx";
 
@@ -26,7 +30,11 @@ const manifest = {
     "./routes/auth/signout.ts": $6,
     "./routes/chat.ts": $7,
     "./routes/index.tsx": $8,
-    "./routes/skyway/token.ts": $9,
+    "./routes/manage/dump.ts": $9,
+    "./routes/manage/reset.ts": $10,
+    "./routes/skyway/token.ts": $11,
+    "./routes/upload/files/[id].ts": $12,
+    "./routes/upload/index.ts": $13,
   },
   islands: {
     "./islands/ChatArea.tsx": $$0,

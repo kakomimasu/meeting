@@ -1,11 +1,12 @@
 import { setCookie } from "$std/http/cookie.ts";
-import { getAuthorizationUri } from "@/utils/github.ts";
+import { getAuthorizationUri, signIn } from "@/utils/github.ts";
 import { setOauthSession } from "@/utils/database.ts";
 import { Handlers } from "$fresh/server.ts";
 import { State } from "@/routes/_middleware.ts";
 
 export const handler: Handlers<null, State> = {
-  async GET() {
+  async GET(req) {
+    /*
     const oauthSession = crypto.randomUUID();
     const state = crypto.randomUUID();
     const { uri, codeVerifier } = await getAuthorizationUri(state);
@@ -23,5 +24,7 @@ export const handler: Handlers<null, State> = {
       httpOnly: true,
     });
     return resp;
+    */
+    return await signIn(req);
   },
 };

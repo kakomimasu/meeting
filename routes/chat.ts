@@ -1,14 +1,14 @@
-import { Comment } from "@/utils/comment.ts";
+import { Handlers } from "$fresh/server.ts";
+import { State } from "@/routes/_middleware.ts";
+import { Comment, User } from "@/utils/types.ts";
 import {
+  getComment,
   keyList,
   kv,
   loadMessages,
   write,
   writeMessage,
 } from "@/utils/database.ts";
-import { Handlers } from "$fresh/server.ts";
-import { User } from "@/utils/database.ts";
-import { State } from "@/routes/_middleware.ts";
 
 type KkmmHandlers<T> = Handlers<T, State>;
 
@@ -40,8 +40,9 @@ export const handler: KkmmHandlers<null> = {
 
     const form = await req.formData();
     const msg = form.get("msg") as string;
+    const commentId = form.get("comment-id") as string;
     // await post(msg);
-    await post2(user, msg);
+    await post2(user, msg, commentId);
     return Response.json({ ok: true });
   },
 };
@@ -52,7 +53,7 @@ function connect() {
     start(controller) {
       bc.addEventListener("message", async () => {
         try {
-          const data = await loadMessages();
+          const data = await getList();
           const chunk = `data: ${JSON.stringify(data)}\n\n`;
           controller.enqueue(new TextEncoder().encode(chunk));
         } catch (e) {
@@ -81,22 +82,48 @@ async function getList() {
   // console.log(list2.map((a) => a.text));
   // return list2;
 
-  // キーが chat- から始まるリストを取得
-  const dbCommentList = keyList("chat-");
+  // キーが comments から始まるリストを取得
+  const dbCommentList = keyList<Comment>("comments");
+
   const commentList = [];
   for await (const dbComment of dbCommentList) {
     commentList.push(dbComment.value);
   }
-  console.log(commentList);
+  // console.log(commentList);
   const sortedList = commentList.sort((a: any, b: any) =>
-    b.created_at.getTime() - a.created_at.getTime()
+    b.createdAt.getTime() - a.createdAt.getTime()
   );
   return sortedList;
 }
 
-async function post2(user: User, message: string) {
-  const comment = new Comment(user, message);
-  await write(["chat-", comment.id], comment);
+async function post2(user: User, message: string, commentId: string) {
+  // commentIdがあれば上書きして終了
+  console.log("commentId?.trim()", commentId?.trim());
+  if (commentId?.trim()) {
+    console.log("編集するよ");
+    const comment = await getComment(commentId);
+    if (comment == null) {
+      return;
+    }
+    comment.message = message;
+    await write(["comments", commentId], comment);
+  } else {
+    console.log("追加するよ");
+
+    // const comment = new Comment(user, message);
+    const comment = {
+      id: crypto.randomUUID().toString(),
+      user: user,
+      message: message,
+      createdAt: new Date(),
+      isDeleted: false,
+    };
+    await write(["comments", comment.id], comment);
+  }
+
+  const bc = new BroadcastChannel(`chat`);
+  bc.postMessage("" + Date.now());
+
   // await writeMessage(JSON.stringify(comment));
 
   // // below test

@@ -1,4 +1,4 @@
-import { User } from "@/utils/database.ts";
+import { User } from "@/utils/types.ts";
 
 export class Comment {
   id;

@@ -3,13 +3,39 @@ import {
   getAndDeleteOauthSession,
   setUserWithSession,
 } from "@/utils/database.ts";
-import { getAuthenticatedUser } from "@/utils/github.ts";
+import {
+  getAuthenticatedUser,
+  getMemberOfOrganization,
+  getSessionAccessToken,
+  handleCallback,
+} from "@/utils/github.ts";
 import { Handlers } from "$fresh/server.ts";
 import { State } from "@/routes/_middleware.ts";
 
 export const handler: Handlers<null, State> = {
   async GET(req) {
+    const { response, sessionId } = await handleCallback(req);
+    const ghUser = await getAuthenticatedUser(sessionId);
+
+    if (
+      ghUser.login != "ninja03" && ghUser.login != "takameron" &&
+      ghUser.login != "kamekyame"
+    ) {
+      return new Response("not member", { status: 400 });
+    }
+
+    await setUserWithSession({
+      id: String(ghUser.id),
+      login: ghUser.login,
+      name: ghUser.name,
+      avatarUrl: ghUser.avatar_url,
+    }, sessionId);
+
+    return response;
+    /*
+    console.log(req);
     const cookies = getCookies(req.headers);
+    console.log(cookies);
     const oauthSessionCookie = cookies["oauth-session"];
     if (!oauthSessionCookie) {
       return new Response("Missing oauth session", { status: 400 });
@@ -21,6 +47,7 @@ export const handler: Handlers<null, State> = {
       return new Response("Missing oauth session", { status: 400 });
     }
     const ghUser = await getAuthenticatedUser(req, oauthSession);
+    console.log(awaitgetMemberOfOrganization(req, oauthSession, "kakomimasu"));
 
     if (
       ghUser.login != "ninja03" && ghUser.login != "takameron" &&
@@ -49,5 +76,6 @@ export const handler: Handlers<null, State> = {
       maxAge: 60 * 60 * 24 * 365,
     });
     return resp;
+    */
   },
 };

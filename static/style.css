@@ -3,19 +3,64 @@
 .main {
   display: flex;
   flex-direction: row;
+  max-width: 1100px;
+
+  @media screen and (max-width: 800px) {
+    flex-flow: column;
+  }
 }
 
 .video {
-  width: 50%;
+  /* width: 50%; */
+  flex-basis: 40%;
+  display:flex;
+  flex-direction:column;
+
+  @media screen and (max-width: 800px) {
+    width: auto;
+    max-width: unset;
+  }
 }
 
-#local-video {
-  position: absolute;
-  width: 128px;
+#remote-media-area div {
+  display:flex;
+  position:relative;
+}
+#remote-media-area video {
+  max-width:100%;
+  width:20vw;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius:0.5em
+}
+#remote-media-area .mic {
+  position:absolute;
+  bottom:2px;
+  right:2px;
+  z-index:10;
+}
+#remote-media-area .camera {
+  position:absolute;
+  bottom:2px;
+  right:calc(2px + 24px + 2px);
+  z-index:10;
+}
+
+.svg-icon{
+  filter: invert(99%) sepia(5%) saturate(159%) hue-rotate(174deg) brightness(118%) contrast(100%);
 }
 
 .chat {
-  width: 50%;
+  /* width: 50%; */
+  flex-basis: 60%;
+
+  @media screen and (min-width: 550px) {
+    margin-left: 0;
+  }
+
+  @media screen and (max-width: 800px) {
+    width: auto;
+  }
 }
 
 .chat-scroll {
