@@ -19,6 +19,7 @@ type StreamData = {
   metadata: string;
   side: "remote" | "local";
   stream: SSR.RemoteStream | SSR.LocalStream;
+  publication: SSR.RoomPublication;
   state: "enabled" | "disabled";
 };
 
@@ -176,6 +177,7 @@ export default function VideoArea({
           metadata: publication.metadata ?? "",
           side: "local",
           stream,
+          publication,
           state,
         },
       ]);
@@ -208,18 +210,12 @@ export default function VideoArea({
         console.log("skip my publication", publication);
         return;
       }
-      publication.publisher.name;
       const { stream } = await me.subscribe(publication.id); // 3-2-1
       if (stream.contentType === "data") return;
       console.log("Remote Publish!", stream.contentType, stream.id);
 
       const state = publication.state;
       if (state === "canceled") return;
-
-      // console.log(publication.metadata, {
-      //   name: publication.publisher.name,
-      //   metadata: publication.publisher.metadata,
-      // });
 
       publication.onEnabled.add(() => {
         changeStreamState(stream, "enabled");
@@ -237,10 +233,10 @@ export default function VideoArea({
           metadata: publication.metadata ?? "",
           side: "remote",
           stream,
+          publication,
           state,
         },
       ]);
-      // setPublication((prev) => [...prev, { publication, stream }]);
     };
 
     room.publications.forEach(subscribeAndAttach);
@@ -252,7 +248,7 @@ export default function VideoArea({
     room.onStreamUnpublished.add((e) => {
       // StreamがUnpublishされたらそのIDの要素を削除
       setStreams((prev) =>
-        prev.filter((p) => p.id !== e.publication.stream?.id)
+        prev.filter((p) => p.publication.id !== e.publication.id)
       );
       console.log(
         "Remote Unpublish!",
@@ -265,10 +261,24 @@ export default function VideoArea({
     const { audioStream, videoStream } = await initStream();
     if (audioStream) {
       await me.publish(audioStream, { metadata: `main` });
+
+      // マイクの有効無効をローカルストレージから復元
+      const micStatus = localStorage.getItem("micStatus") ?? "enable";
+      console.log(micStatus, localStorage.getItem("micStatus"));
+      if (micStatus === "disable") {
+        setIsEnableMic(false);
+      }
       console.log("published audio");
     }
     if (videoStream) {
       await me.publish(videoStream, { metadata: `main` });
+
+      // カメラの有効無効をローカルストレージから復元
+      const cameraStatus = localStorage.getItem("cameraStatus") ?? "enable";
+      if (cameraStatus === "disable") {
+        setIsEnableCamera(false);
+      }
+
       console.log("published video");
     }
 
@@ -334,20 +344,30 @@ export default function VideoArea({
 
   useEffect(() => {
     const camera = room?.me.publications.find((p) => p.contentType === "video");
+    if (!camera) return;
+    let cameraStatus = "";
     if (isEnableCamera) {
-      camera?.enable();
+      cameraStatus = "enable";
+      camera.enable();
     } else {
-      camera?.disable();
+      cameraStatus = "disable";
+      camera.disable();
     }
+    localStorage.setItem("cameraStatus", cameraStatus);
   }, [room, isEnableCamera]);
 
   useEffect(() => {
     const mic = room?.me.publications.find((p) => p.contentType === "audio");
+    if (!mic) return;
+    let micStatus = "";
     if (isEnableMic) {
-      mic?.enable();
+      micStatus = "enable";
+      mic.enable();
     } else {
-      mic?.disable();
+      micStatus = "disable";
+      mic.disable();
     }
+    localStorage.setItem("micStatus", micStatus);
   }, [room, isEnableMic]);
 
   useEffect(() => {
