@@ -1,6 +1,6 @@
-import { User } from "@/utils/database.ts";
+import { User } from "@/utils/types.ts";
 
-export function UserArea({ user }: { user: User }) {
+export function UserArea({ user }: { user: User | null }) {
   return (
     <div>
       <img src={user ? user.avatarUrl : ""} width={32} />
