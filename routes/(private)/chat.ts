@@ -59,6 +59,9 @@ async function getList() {
   for await (const dbComment of dbCommentList) {
     commentList.push(dbComment.value);
   }
+  commentList.sort((a, b) => {
+    return a.createdAt.getTime() - b.createdAt.getTime();
+  });
   return commentList;
 }
 
