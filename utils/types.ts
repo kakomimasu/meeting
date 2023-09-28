@@ -12,4 +12,9 @@ export interface Comment {
   createdAt: Date;
   isDeleted: boolean;
   fileId?: string;
+  contentType?: string; //
+}
+
+export interface State {
+  user: User | null;
 }

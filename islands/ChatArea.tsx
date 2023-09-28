@@ -1,11 +1,21 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { useSignal } from "@preact/signals";
 import { User, Comment } from "@/utils/types.ts";
+import { ChangeEvent } from "preact/compat";
 
 export default function ChatArea({ user }: { user: User }) {
-  const data = useSignal<Comment[]>([]);
+  const [data, setData] = useState<Comment[]>([]);
   const input = useRef<HTMLTextAreaElement>(null);
   const commentIdElement = useRef<HTMLInputElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  // コメントが更新されたら一番下までスクロール
+  useEffect(() => {
+    if (chatRef.current) {
+      const scrollHeight = chatRef.current.scrollHeight;
+      chatRef.current.scrollTop = scrollHeight - chatRef.current.clientHeight;
+    }
+  }, [data]);
 
   useEffect(() => {
     if (!user) {
@@ -13,12 +23,12 @@ export default function ChatArea({ user }: { user: User }) {
     }
 
     (async () => {
-      data.value = await (await fetch("/chat")).json();
+      setData(await (await fetch("/chat")).json());
     })();
 
     let es = new EventSource(window.location.href + "chat");
     es.addEventListener("message", (e) => {
-      data.value = JSON.parse(e.data);
+      setData(JSON.parse(e.data));
     });
 
     es.addEventListener("error", async () => {
@@ -75,7 +85,6 @@ export default function ChatArea({ user }: { user: User }) {
     ));
 
   const modifyComment = (comment: Comment) => {
-    console.log("comment", comment);
     if (!input.current || !commentIdElement.current) {
       return;
     }
@@ -83,44 +92,70 @@ export default function ChatArea({ user }: { user: User }) {
     commentIdElement.current.value = comment.id;
   };
 
-  const upload = async (e) => {
-    console.log("upload file");
+  const upload = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target) {
+      return;
+    }
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
+    formData.append("filename", e.target.files[0].name);
     await fetch("/upload", {
       method: "POST",
       body: formData,
     });
   };
 
+  const ChatEdit = ({ comment }: { comment: Comment }) => {
+    return (
+      <div class="chat-edit">
+        {user.id == comment.user.id ? (
+          <a href="#" onClick={() => modifyComment(comment)}>
+            🖊️
+          </a>
+        ) : (
+          <></>
+        )}
+      </div>
+    );
+  };
+
+  const FileView = ({ comment }: { comment: Comment }) => (
+    <div>
+      {replaceBr(comment.message)}{" "}
+      {comment.fileId && comment.contentType?.startsWith("image/") ? (
+        <img src={`/upload/files/${comment.fileId}`} width={64} />
+      ) : (
+        ""
+      )}
+      {comment.fileId && !comment.contentType?.startsWith("image/") ? (
+        <a href={`/upload/files/${comment.fileId}`}>開く</a>
+      ) : (
+        ""
+      )}
+    </div>
+  );
+
   return (
     <>
       <div class="chat">
-        <div class="chat-scroll">
-          <table>
-            {data.value.map((d) => (
-              <tr>
-                <td>
-                  <img src={d.user.avatarUrl} />
-                </td>
-                <td>{d.user.name}</td>
-                <td>
-                  {replaceBr(d.message)}{" "}
-                  {d.fileId ? (
-                    <img src={`/upload/files/${d.fileId}`} width={64} />
-                  ) : (
-                    ""
-                  )}
-                  {user.id == d.user.id ? (
-                    <button onClick={() => modifyComment(d)}>🖊️</button>
-                  ) : (
-                    ""
-                  )}
-                </td>
-                <td>{showDate(d.createdAt)}</td>
-              </tr>
-            ))}
-          </table>
+        <div class="chat-scroll" ref={chatRef}>
+          {data.map((d) => (
+            <div class="chat-row">
+              <div>
+                <img src={d.user.avatarUrl} width="48" height="48" />
+              </div>
+              <div class="chat-right">
+                <div class="chat-right-top">
+                  <div>{d.user.name}</div>
+                  <div class="chat-date">
+                    {showDate(d.createdAt.toString())}
+                  </div>
+                  <ChatEdit comment={d} />
+                </div>
+                <FileView comment={d} />
+              </div>
+            </div>
+          ))}
         </div>
         <div>
           <textarea ref={input} class="msg-input" onKeyDown={keyDown} />
@@ -128,8 +163,8 @@ export default function ChatArea({ user }: { user: User }) {
           <button onClick={send} class="msg-send">
             送信
           </button>
-          <button onClick={reset}>りせっと</button>
-          <input type="file" onChange={upload} />
+          <button onClick={reset}>リセット</button>
+          <input type="file" onInput={upload} />
         </div>
       </div>
     </>

@@ -1,24 +1,30 @@
-import { set } from "kv_toolbox/blob.ts";
+import { contentType } from "$std/media_types/mod.ts";
+import { extname } from "$std/path/mod.ts";
 import { Handlers } from "$fresh/server.ts";
-import { State } from "@/routes/_middleware.ts";
-import { kv } from "@/utils/database.ts";
+import { State } from "@/utils/types.ts";
+import { saveFile } from "@/utils/database.ts";
 
 export const handler: Handlers<null, State> = {
   async POST(req, ctx) {
     const user = ctx.state.user;
     if (!user) {
-      return new Response(null, { status: 403 });
+      return new Response(null, {
+        status: 403,
+      });
     }
     const form = await req.formData();
     const file = form.get("file") as File | null;
     const body = new Uint8Array(await file!.arrayBuffer());
+
+    const filename = form.get("filename") as string;
+    const ctype = contentType(extname(filename));
+
     const fileId = crypto.randomUUID().toString();
     const stream = new Response(body).body;
     if (!stream) {
       return new Response(null, { status: 400 });
     }
-    await set(kv, ["files", fileId, "blob"], stream);
-    await kv.set(["files", fileId, "contentType"], "image/png");
+
     const comment = {
       id: crypto.randomUUID().toString(),
       user,
@@ -26,9 +32,10 @@ export const handler: Handlers<null, State> = {
       createdAt: new Date(),
       isDeleted: false,
       fileId,
+      contentType: ctype,
     };
 
-    await kv.set(["comments", comment.id], comment);
+    await saveFile(fileId, stream, ctype, comment);
 
     const bc = new BroadcastChannel(`chat`);
     bc.postMessage("" + Date.now());
