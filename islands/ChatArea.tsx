@@ -76,13 +76,32 @@ export default function ChatArea({ user }: { user: User }) {
     }
   };
 
-  const replaceBr = (text: string) =>
-    text.split("\n").map((a) => (
-      <>
-        {a}
-        <br />
-      </>
-    ));
+  const replaceBr = (text: string) => {
+    return text.split("\n").map((a) => {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const parts = a.split(urlRegex);
+      return (
+        <>
+          {parts.map((part, index) => {
+            if (part.match(urlRegex)) {
+              return (
+                <a
+                  key={index}
+                  href={part}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {part}
+                </a>
+              );
+            }
+            return part;
+          })}
+          <br />
+        </>
+      );
+    });
+  };
 
   const modifyComment = (comment: Comment) => {
     if (!input.current || !commentIdElement.current) {
