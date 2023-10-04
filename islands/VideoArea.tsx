@@ -381,6 +381,7 @@ export default function VideoArea({
         display: "flex",
         flexDirection: "column",
         gap: "3px",
+        padding: "1em",
       }}
     >
       <Head>
@@ -520,38 +521,29 @@ export default function VideoArea({
             setIsEnableCamera((prev) => !prev);
           }}
         />
-        <button
-          id="share-screen"
-          onClick={() => {
-            if (screenShareStream) {
-              stopShareScreen();
-            } else {
-              startShareScreen();
-            }
+        <SvgIcon
+          icon="screen"
+          on={screenShareStream ? false : true}
+          style={{
+            backgroundColor: screenShareStream ? "red" : "transparent",
           }}
-        >
-          {screenShareStream ? "画面共有をやめる" : "画面共有をする"}
-        </button>
-      </div>
-
-      <div>
-        <button
-          id="join-leave"
           onClick={() => {
-            if (room) {
-              leaveRoom();
-            } else {
-              joinRoom();
-            }
+            if (screenShareStream) stopShareScreen();
+            else startShareScreen();
           }}
-        >
-          {room ? "Leave" : "Join"}
-        </button>
-        {room && (
-          <span id="my-id" style={{ fontSize: "10px" }}>
-            {room.me.id}
-          </span>
-        )}
+        />
+        <div style={{ flexGrow: 1 }}></div>
+        <SvgIcon
+          icon="phone"
+          on={room ? false : true}
+          style={{
+            backgroundColor: room ? "red" : "green",
+          }}
+          onClick={() => {
+            if (room) leaveRoom();
+            else joinRoom();
+          }}
+        />
       </div>
     </div>
   );
