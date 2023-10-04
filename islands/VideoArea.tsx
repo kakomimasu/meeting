@@ -29,10 +29,29 @@ async function initStream() {
   let audioStream: SSR.LocalAudioStream | undefined = undefined;
   let videoStream: SSR.LocalVideoStream | undefined = undefined;
   try {
-    audioStream = await SkyWayStreamFactory.createMicrophoneAudioStream({
-      noiseSuppression: true,
-      echoCancellation: true,
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        noiseSuppression: false,
+        echoCancellation: true,
+        sampleRate: { ideal: 32000 },
+        sampleSize: { ideal: 16 },
+        // latency: 0.01,
+      },
     });
+
+    const audioContext = new AudioContext();
+    const mic = audioContext.createMediaStreamSource(stream);
+    const output = audioContext.createMediaStreamDestination();
+
+    const noiseSuppressionFilter = audioContext.createBiquadFilter();
+    noiseSuppressionFilter.type = "bandpass";
+    noiseSuppressionFilter.frequency.value = 1000;
+
+    mic.connect(noiseSuppressionFilter);
+    noiseSuppressionFilter.connect(output);
+
+    const audioSource = output.stream.getAudioTracks()[0];
+    audioStream = new window.skyway_room.LocalAudioStream(audioSource);
   } catch (_e) {
     console.error("マイクが取得できません。");
   }
