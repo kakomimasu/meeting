@@ -1,5 +1,5 @@
 import { OauthSession } from "@/utils/github.ts";
-import { Comment, User } from "@/utils/types.ts";
+import { Comment, Group, User } from "@/utils/types.ts";
 import { get, set } from "kv_toolbox/blob.ts";
 
 const kv = await Deno.openKv();
@@ -7,6 +7,7 @@ const kv = await Deno.openKv();
 const KV_KEY_PREFIX_COMMENT = "comments";
 const KV_KEY_PREFIX_USER_SESSION = "users_by_session";
 const KV_KEY_PREFIX_OAUTH_SESSION = "oauth_sessions";
+const KV_KEY_PREFIX_GROUP = "group";
 
 export function keyListComment() {
   return kv.list<Comment>({ prefix: [KV_KEY_PREFIX_COMMENT] });
@@ -77,4 +78,24 @@ export async function loadFile(fileId: string) {
   const contentType =
     (await kv.get<string>(["files", fileId, "contentType"])).value;
   return { body, contentType };
+}
+
+export async function loadWhiteBoard() {
+  return (await kv.get<string>(["whiteboard"])).value ?? "";
+}
+
+export async function saveWhiteBoard(content: string) {
+  return await kv.set(["whiteboard"], content);
+}
+
+export async function createGroup(group: Group) {
+  await kv.set([KV_KEY_PREFIX_GROUP, group.id], group);
+}
+
+export async function getGroup(groupId: string) {
+  return await kv.get<Group>([KV_KEY_PREFIX_GROUP, groupId]);
+}
+
+export function getGroupList() {
+  return kv.list<Group>({ prefix: [KV_KEY_PREFIX_GROUP] });
 }

@@ -1,6 +1,6 @@
 import { Handlers } from "$fresh/server.ts";
 import { State } from "@/utils/types.ts";
-import { Comment, User } from "@/utils/types.ts";
+import { Comment, Ogp, User } from "@/utils/types.ts";
 import { getComment, keyListComment, writeComment } from "@/utils/database.ts";
 
 type KkmmHandlers<T> = Handlers<T, State>;
@@ -16,7 +16,7 @@ export const handler: KkmmHandlers<null> = {
         },
       });
     }
-    const data = await getList();
+    const data = await getList("main");
     return Response.json(data);
   },
 
@@ -39,7 +39,7 @@ function connect() {
   const body = new ReadableStream({
     start(controller) {
       bc.addEventListener("message", async () => {
-        const data = await getList();
+        const data = await getList("main");
         const chunk = `data: ${JSON.stringify(data)}\n\n`;
         controller.enqueue(new TextEncoder().encode(chunk));
       });
@@ -51,12 +51,18 @@ function connect() {
   return body;
 }
 
-async function getList() {
-  // キーが comments から始まるリストを取得
+async function getList(groupId: string) {
+  // コメントを全部取得
   const dbCommentList = keyListComment();
-
+  // 指定されたグループのコメントを抽出
+  const commentListInGroup = [];
+  for await (const comment of dbCommentList) {
+    if (comment.value.groupId == groupId) {
+      commentListInGroup.push(comment);
+    }
+  }
   const commentList = [];
-  for await (const dbComment of dbCommentList) {
+  for await (const dbComment of commentListInGroup) {
     commentList.push(dbComment.value);
   }
   commentList.sort((a, b) => {
@@ -66,6 +72,13 @@ async function getList() {
 }
 
 async function post(user: User, message: string, commentId?: string) {
+  // URLを検知したらOGPを取ってくる処理をついか
+  const ogp: Ogp = {
+    title: "",
+    description: "",
+    imageUrl: "",
+  };
+
   // commentIdがあれば上書きして終了
   if (commentId && commentId?.trim()) {
     const comment = await getComment(commentId);
@@ -81,6 +94,7 @@ async function post(user: User, message: string, commentId?: string) {
       message: message,
       createdAt: new Date(),
       isDeleted: false,
+      groupId: "main",
     };
     await writeComment(comment);
   }

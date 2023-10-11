@@ -12,9 +12,22 @@ export interface Comment {
   createdAt: Date;
   isDeleted: boolean;
   fileId?: string;
-  contentType?: string; //
+  contentType?: string;
+  ogp?: Ogp;
+  groupId: string;
+}
+
+export interface Ogp {
+  title: string;
+  description: string;
+  imageUrl: string;
 }
 
 export interface State {
   user: User | null;
+}
+
+export interface Group {
+  id: string;
+  name: string;
 }
