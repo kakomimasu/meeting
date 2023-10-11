@@ -9,8 +9,8 @@ import { State } from "@/utils/types.ts";
 
 export const handler: Handlers<null, State> = {
   async GET(req) {
-    const { response, sessionId } = await handleCallback(req);
-    const ghUser = await getAuthenticatedUser(sessionId);
+    const { response, sessionId, tokens } = await handleCallback(req);
+    const ghUser = await getAuthenticatedUser(tokens.accessToken);
 
     const loginNameList = await getMember("kakomimasu");
     if (
