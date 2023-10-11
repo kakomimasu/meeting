@@ -4,41 +4,47 @@
 
 import * as $0 from "./routes/(private)/_middleware.ts";
 import * as $1 from "./routes/(private)/chat.ts";
-import * as $2 from "./routes/(private)/manage/dump.ts";
-import * as $3 from "./routes/(private)/manage/reset.ts";
-import * as $4 from "./routes/(private)/upload/files/[id].ts";
-import * as $5 from "./routes/(private)/upload/index.ts";
-import * as $6 from "./routes/_404.tsx";
-import * as $7 from "./routes/_500.tsx";
-import * as $8 from "./routes/_app.tsx";
-import * as $9 from "./routes/_middleware.ts";
-import * as $10 from "./routes/auth/oauth2callback.ts";
-import * as $11 from "./routes/auth/signin.ts";
-import * as $12 from "./routes/auth/signout.ts";
-import * as $13 from "./routes/index.tsx";
+import * as $2 from "./routes/(private)/group/[group].tsx";
+import * as $3 from "./routes/(private)/manage/dump.ts";
+import * as $4 from "./routes/(private)/manage/reset.ts";
+import * as $5 from "./routes/(private)/upload/files/[id].ts";
+import * as $6 from "./routes/(private)/upload/index.ts";
+import * as $7 from "./routes/(private)/whiteboard.ts";
+import * as $8 from "./routes/_404.tsx";
+import * as $9 from "./routes/_500.tsx";
+import * as $10 from "./routes/_app.tsx";
+import * as $11 from "./routes/_middleware.ts";
+import * as $12 from "./routes/auth/oauth2callback.ts";
+import * as $13 from "./routes/auth/signin.ts";
+import * as $14 from "./routes/auth/signout.ts";
+import * as $15 from "./routes/index.tsx";
 import * as $$0 from "./islands/ChatArea.tsx";
 import * as $$1 from "./islands/VideoArea.tsx";
+import * as $$2 from "./islands/WhiteBoardArea2.tsx";
 
 const manifest = {
   routes: {
     "./routes/(private)/_middleware.ts": $0,
     "./routes/(private)/chat.ts": $1,
-    "./routes/(private)/manage/dump.ts": $2,
-    "./routes/(private)/manage/reset.ts": $3,
-    "./routes/(private)/upload/files/[id].ts": $4,
-    "./routes/(private)/upload/index.ts": $5,
-    "./routes/_404.tsx": $6,
-    "./routes/_500.tsx": $7,
-    "./routes/_app.tsx": $8,
-    "./routes/_middleware.ts": $9,
-    "./routes/auth/oauth2callback.ts": $10,
-    "./routes/auth/signin.ts": $11,
-    "./routes/auth/signout.ts": $12,
-    "./routes/index.tsx": $13,
+    "./routes/(private)/group/[group].tsx": $2,
+    "./routes/(private)/manage/dump.ts": $3,
+    "./routes/(private)/manage/reset.ts": $4,
+    "./routes/(private)/upload/files/[id].ts": $5,
+    "./routes/(private)/upload/index.ts": $6,
+    "./routes/(private)/whiteboard.ts": $7,
+    "./routes/_404.tsx": $8,
+    "./routes/_500.tsx": $9,
+    "./routes/_app.tsx": $10,
+    "./routes/_middleware.ts": $11,
+    "./routes/auth/oauth2callback.ts": $12,
+    "./routes/auth/signin.ts": $13,
+    "./routes/auth/signout.ts": $14,
+    "./routes/index.tsx": $15,
   },
   islands: {
     "./islands/ChatArea.tsx": $$0,
     "./islands/VideoArea.tsx": $$1,
+    "./islands/WhiteBoardArea2.tsx": $$2,
   },
   baseUrl: import.meta.url,
 };

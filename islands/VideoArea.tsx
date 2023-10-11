@@ -29,10 +29,29 @@ async function initStream() {
   let audioStream: SSR.LocalAudioStream | undefined = undefined;
   let videoStream: SSR.LocalVideoStream | undefined = undefined;
   try {
-    audioStream = await SkyWayStreamFactory.createMicrophoneAudioStream({
-      noiseSuppression: true,
-      echoCancellation: true,
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        noiseSuppression: false,
+        echoCancellation: true,
+        sampleRate: { ideal: 32000 },
+        sampleSize: { ideal: 16 },
+        // latency: 0.01,
+      },
     });
+
+    const audioContext = new AudioContext();
+    const mic = audioContext.createMediaStreamSource(stream);
+    const output = audioContext.createMediaStreamDestination();
+
+    const noiseSuppressionFilter = audioContext.createBiquadFilter();
+    noiseSuppressionFilter.type = "bandpass";
+    noiseSuppressionFilter.frequency.value = 1000;
+
+    mic.connect(noiseSuppressionFilter);
+    noiseSuppressionFilter.connect(output);
+
+    const audioSource = output.stream.getAudioTracks()[0];
+    audioStream = new window.skyway_room.LocalAudioStream(audioSource);
   } catch (_e) {
     console.error("マイクが取得できません。");
   }
@@ -381,6 +400,7 @@ export default function VideoArea({
         display: "flex",
         flexDirection: "column",
         gap: "3px",
+        padding: "1em",
       }}
     >
       <Head>
@@ -520,38 +540,29 @@ export default function VideoArea({
             setIsEnableCamera((prev) => !prev);
           }}
         />
-        <button
-          id="share-screen"
-          onClick={() => {
-            if (screenShareStream) {
-              stopShareScreen();
-            } else {
-              startShareScreen();
-            }
+        <SvgIcon
+          icon="screen"
+          on={screenShareStream ? false : true}
+          style={{
+            backgroundColor: screenShareStream ? "red" : "transparent",
           }}
-        >
-          {screenShareStream ? "画面共有をやめる" : "画面共有をする"}
-        </button>
-      </div>
-
-      <div>
-        <button
-          id="join-leave"
           onClick={() => {
-            if (room) {
-              leaveRoom();
-            } else {
-              joinRoom();
-            }
+            if (screenShareStream) stopShareScreen();
+            else startShareScreen();
           }}
-        >
-          {room ? "Leave" : "Join"}
-        </button>
-        {room && (
-          <span id="my-id" style={{ fontSize: "10px" }}>
-            {room.me.id}
-          </span>
-        )}
+        />
+        <div style={{ flexGrow: 1 }}></div>
+        <SvgIcon
+          icon="phone"
+          on={room ? false : true}
+          style={{
+            backgroundColor: room ? "red" : "green",
+          }}
+          onClick={() => {
+            if (room) leaveRoom();
+            else joinRoom();
+          }}
+        />
       </div>
     </div>
   );

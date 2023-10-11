@@ -28,7 +28,7 @@ body {
 
 .chat {
   /* width: 50%; */
-  flex-basis: 60%;
+  flex-basis: 40%;
 
   @media screen and (min-width: 550px) {
     margin-left: 0;
@@ -78,4 +78,8 @@ body {
 
 button {
   margin:0px
+}
+
+.whiteboard {
+  flex-basis: 20%;
 }

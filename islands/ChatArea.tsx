@@ -3,7 +3,7 @@ import { useSignal } from "@preact/signals";
 import { User, Comment } from "@/utils/types.ts";
 import { ChangeEvent } from "preact/compat";
 
-export default function ChatArea({ user }: { user: User }) {
+export default function ChatArea({ user }: { user: User; groupId: string }) {
   const [data, setData] = useState<Comment[]>([]);
   const input = useRef<HTMLTextAreaElement>(null);
   const commentIdElement = useRef<HTMLInputElement>(null);
